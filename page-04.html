@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="page" content="4">
+  <title>Page 4 — The For Loop | Python Loops</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="page-wrapper">
+  <header class="page-header">
+    <span class="phase-badge">Phase: Core Concepts</span>
+    <h1>The For Loop</h1>
+    <p class="subtitle">Let Python do the counting</p>
+  </header>
+
+  <div class="concept-box">
+    A <code>for</code> loop automatically steps through a sequence of values, one at a time.
+    You don't need to create a counter, update it, or write a condition —
+    <strong>Python handles all of that.</strong>
+  </div>
+
+  <!-- Widget: Side-by-Side Comparison -->
+  <div class="card">
+    <div class="card-title">Widget — While vs For, Side-by-Side</div>
+    <div class="grid-2" id="both-panels">
+      <!-- While panel -->
+      <div>
+        <h4 style="margin-bottom:0.6rem;color:var(--color-secondary);">while loop</h4>
+        <div id="while-code" class="st-code-panel" style="font-size:0.9rem;line-height:2;min-height:120px;"></div>
+        <div class="var-watch mt-1">
+          <div class="var-watch-title">Variables</div>
+          <table class="var-table" id="while-vars"></table>
+        </div>
+        <div class="var-watch-title mt-1" style="margin-bottom:0.3rem;">Output</div>
+        <div class="console-output" id="while-output" style="min-height:60px;"></div>
+      </div>
+      <!-- For panel -->
+      <div>
+        <h4 style="margin-bottom:0.6rem;color:var(--color-primary);">for loop</h4>
+        <div id="for-code" class="st-code-panel" style="font-size:0.9rem;line-height:2;min-height:120px;"></div>
+        <div class="var-watch mt-1">
+          <div class="var-watch-title">Variables</div>
+          <table class="var-table" id="for-vars"></table>
+        </div>
+        <div class="var-watch-title mt-1" style="margin-bottom:0.3rem;">Output</div>
+        <div class="console-output" id="for-output" style="min-height:60px;"></div>
+      </div>
+    </div>
+
+    <div class="st-controls mt-2">
+      <button class="btn btn-primary btn-sm" id="step-both">Step →</button>
+      <button class="btn btn-ghost btn-sm" id="run-both">Run All</button>
+      <button class="btn btn-outline btn-sm" id="reset-both">Reset</button>
+    </div>
+
+    <!-- Annotations (shown after completion) -->
+    <div id="annotations" class="hidden mt-3">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+        <div>
+          <div class="badge badge-warn mb-1">Manual management</div>
+          <ul class="text-sm" style="padding-left:1.25rem;color:#64748b;">
+            <li><code>i = 0</code> — create the counter</li>
+            <li><code>while i &lt; 5:</code> — write the condition</li>
+            <li><code>i = i + 1</code> — update the counter</li>
+          </ul>
+        </div>
+        <div>
+          <div class="badge badge-success mb-1">Automatic ✓</div>
+          <ul class="text-sm" style="padding-left:1.25rem;color:#64748b;">
+            <li><code>for i in range(5):</code> handles all three</li>
+            <li>Python creates, checks, and updates <code>i</code></li>
+            <li>You just say what sequence to step through</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Explanatory text -->
+  <div class="card">
+    <h3 class="mb-1">The <code>for</code> loop syntax</h3>
+    <pre style="margin-bottom:1rem;"><code id="for-syntax">for variable in sequence:
+    # body runs for each value</code></pre>
+    <p><code>range(5)</code> produces the sequence <code>[0, 1, 2, 3, 4]</code>. On each iteration, <code>i</code> takes the next value.</p>
+    <p>The <code>for</code> loop is the right choice whenever you have a <em>known sequence</em> to walk through — numbers, list items, characters in a string, and much more.</p>
+  </div>
+
+  <div class="next-teaser">
+    <strong>Next up:</strong> <code>range()</code> is more powerful than it looks — let's unlock its full potential.
+  </div>
+</div>
+
+<script src="js/syntax-highlight.js"></script>
+<script src="js/nav.js"></script>
+<script>
+(function() {
+  // Highlight static code
+  document.getElementById('for-syntax').innerHTML =
+    highlightPython(document.getElementById('for-syntax').textContent);
+
+  // ── Code definitions ──
+  const whileCode = [
+    'i = 0',
+    'while i < 5:',
+    '    print(i)',
+    '    i = i + 1'
+  ];
+  const forCode = [
+    'for i in range(5):',
+    '    print(i)'
+  ];
+
+  // ── Build execution traces ──
+  // While trace
+  const whileSteps = [];
+  whileSteps.push({ lineIndex: 0, vars: { i: 0 }, out: null, badge: null });
+  for (let c = 0; c < 5; c++) {
+    whileSteps.push({ lineIndex: 1, vars: {}, out: null, badge: `${c} < 5 → True` });
+    whileSteps.push({ lineIndex: 2, vars: {}, out: String(c), badge: null });
+    whileSteps.push({ lineIndex: 3, vars: { i: c + 1 }, out: null, badge: null });
+  }
+  whileSteps.push({ lineIndex: 1, vars: {}, out: null, badge: '5 < 5 → False' });
+
+  // For trace
+  const forSteps = [];
+  for (let c = 0; c < 5; c++) {
+    forSteps.push({ lineIndex: 0, vars: { i: c }, out: null, badge: null });
+    forSteps.push({ lineIndex: 1, vars: {}, out: String(c), badge: null });
+  }
+  forSteps.push({ lineIndex: 0, vars: {}, out: null, badge: 'range exhausted' });
+
+  // Total steps = max of both (pad with null on the shorter one)
+  const totalSteps = Math.max(whileSteps.length, forSteps.length);
+
+  // ── Render code panels ──
+  function renderCodePanel(panelEl, codeLines) {
+    panelEl.innerHTML = '';
+    const els = [];
+    codeLines.forEach((line, idx) => {
+      const row = document.createElement('div');
+      row.className = 'st-code-line';
+      row.innerHTML = `<span class="st-line-num">${idx+1}</span><span>${highlightPython(line)}</span><span class="condition-badge-slot"></span>`;
+      panelEl.appendChild(row);
+      els.push(row);
+    });
+    return els;
+  }
+
+  const whileEls = renderCodePanel(document.getElementById('while-code'), whileCode);
+  const forEls   = renderCodePanel(document.getElementById('for-code'), forCode);
+
+  // ── State ──
+  let stepIdx = -1;
+  let timer = null;
+  let whileVars = {};
+  let forVars   = {};
+  let whileOut  = '';
+  let forOut    = '';
+
+  function renderVars(tableEl, vars) {
+    tableEl.innerHTML = '';
+    const entries = Object.entries(vars);
+    if (!entries.length) {
+      const r = tableEl.insertRow(); const td = r.insertCell();
+      td.colSpan = 3; td.style.color='#94a3b8'; td.style.fontStyle='italic'; td.style.fontSize='0.8rem';
+      td.textContent='(none)'; return;
+    }
+    entries.forEach(([k,v]) => {
+      tableEl.insertRow().innerHTML = `<td class="var-name">${k}</td><td class="var-eq">&nbsp;=&nbsp;</td><td class="var-val">${v}</td>`;
+    });
+  }
+
+  function applyWhileStep(s) {
+    whileEls.forEach(el => {
+      el.classList.remove('active');
+      el.querySelector('.condition-badge-slot').innerHTML = '';
+    });
+    if (!s) return;
+    const { lineIndex, vars, out, badge } = s;
+    if (lineIndex >= 0 && lineIndex < whileEls.length) {
+      whileEls[lineIndex].classList.add('active');
+      if (badge) {
+        const isTrue = /→\s*True/i.test(badge);
+        const slot = whileEls[lineIndex].querySelector('.condition-badge-slot');
+        slot.innerHTML = `<span class="condition-badge ${isTrue?'true-badge':'false-badge'}">${badge}</span>`;
+      }
+    }
+    if (vars && Object.keys(vars).length) { whileVars = Object.assign({}, whileVars, vars); }
+    renderVars(document.getElementById('while-vars'), whileVars);
+    if (out !== null && out !== undefined) {
+      whileOut += out + '\n';
+      document.getElementById('while-output').textContent = whileOut;
+    }
+  }
+
+  function applyForStep(s) {
+    forEls.forEach(el => {
+      el.classList.remove('active');
+      el.querySelector('.condition-badge-slot').innerHTML = '';
+    });
+    if (!s) return;
+    const { lineIndex, vars, out, badge } = s;
+    if (lineIndex >= 0 && lineIndex < forEls.length) {
+      forEls[lineIndex].classList.add('active');
+      if (badge) {
+        const slot = forEls[lineIndex].querySelector('.condition-badge-slot');
+        const isTrue = /True/i.test(badge);
+        slot.innerHTML = `<span class="condition-badge ${isTrue?'true-badge':'false-badge'}">${badge}</span>`;
+      }
+    }
+    if (vars && Object.keys(vars).length) { forVars = Object.assign({}, forVars, vars); }
+    renderVars(document.getElementById('for-vars'), forVars);
+    if (out !== null && out !== undefined) {
+      forOut += out + '\n';
+      document.getElementById('for-output').textContent = forOut;
+    }
+  }
+
+  function advanceStep() {
+    stepIdx++;
+    applyWhileStep(whileSteps[stepIdx] || null);
+    applyForStep(forSteps[stepIdx] || null);
+    updateControls();
+    if (stepIdx >= totalSteps - 1) {
+      document.getElementById('annotations').classList.remove('hidden');
+    }
+  }
+
+  function updateControls() {
+    const done = stepIdx >= totalSteps - 1;
+    document.getElementById('step-both').disabled = done || !!timer;
+    document.getElementById('run-both').disabled  = done || !!timer;
+  }
+
+  function resetAll() {
+    if (timer) { clearTimeout(timer); timer = null; }
+    stepIdx = -1; whileVars = {}; forVars = {}; whileOut = ''; forOut = '';
+    document.getElementById('while-output').textContent = '';
+    document.getElementById('for-output').textContent = '';
+    renderVars(document.getElementById('while-vars'), {});
+    renderVars(document.getElementById('for-vars'), {});
+    applyWhileStep(null); applyForStep(null);
+    document.getElementById('annotations').classList.add('hidden');
+    updateControls();
+  }
+
+  document.getElementById('step-both').addEventListener('click', () => { if (!timer) advanceStep(); });
+  document.getElementById('run-both').addEventListener('click', () => {
+    if (timer) return;
+    updateControls();
+    function tick() {
+      if (stepIdx >= totalSteps - 1) { timer = null; updateControls(); return; }
+      advanceStep();
+      timer = setTimeout(tick, 500);
+    }
+    timer = setTimeout(tick, 0);
+  });
+  document.getElementById('reset-both').addEventListener('click', resetAll);
+
+  resetAll();
+})();
+</script>
+</body>
+</html>

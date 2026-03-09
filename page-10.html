@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="page" content="10">
+  <title>Page 10 — The Loop Lab | Python Loops</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="page-wrapper">
+  <header class="page-header">
+    <span class="phase-badge">Phase: Final Challenge</span>
+    <h1>The Loop Lab</h1>
+    <p class="subtitle">Guide the robot home</p>
+  </header>
+
+  <div class="concept-box">
+    Everything you've learned — <code>while</code>, <code>for</code>, <code>range()</code>, <code>break</code>, <code>continue</code>,
+    conditions, counters — comes together here. Programming is about combining simple tools to solve complex problems.
+  </div>
+
+  <!-- Level tabs -->
+  <div class="tab-bar" style="margin-bottom:0.5rem;">
+    <button class="tab-btn active" id="lvl-btn-0" onclick="selectLevel(0)">Level 1 — Straight Line</button>
+    <button class="tab-btn" id="lvl-btn-1" onclick="selectLevel(1)">Level 2 — L-Shape</button>
+    <button class="tab-btn" id="lvl-btn-2" onclick="selectLevel(2)">Level 3 — Maze</button>
+  </div>
+
+  <div id="level-title" class="text-sm text-muted mb-1" style="padding:0 0.25rem;">
+    Level 1: Move forward 5 steps to reach the flag.
+  </div>
+
+  <!-- Robot Game Widget -->
+  <div class="card">
+    <div class="robot-canvas-wrap mb-2">
+      <canvas id="robot-canvas"></canvas>
+    </div>
+    <div id="robot-code-area"></div>
+  </div>
+
+  <!-- Congratulations -->
+  <div id="congrats-box" class="hidden card" style="border:2px solid var(--color-success);background:#f0fdf4;text-align:center;">
+    <div style="font-size:2.5rem;margin-bottom:0.5rem;">🎉</div>
+    <h2 style="color:var(--color-success);margin-bottom:0.5rem;">All levels complete!</h2>
+    <p>You've mastered Python loops. From infinite loops to mazes, you handled it all.</p>
+    <a href="index.html" class="btn btn-success mt-2">Back to Home</a>
+  </div>
+
+  <!-- Concept Map -->
+  <div class="card">
+    <div class="card-title">Concept Map — Everything You've Learned</div>
+    <div class="concept-tree">
+      <div class="tree-root">REPETITION</div>
+      <div class="tree-level-1">
+        <div><span class="tree-branch">├── </span><strong style="color:#fbbf24;"><a href="page-02.html">WHILE loop</a></strong></div>
+        <div class="tree-level-2">
+          <div><span class="tree-branch">├── </span><span class="tree-leaf">condition checked every iteration</span></div>
+          <div><span class="tree-branch">├── </span><span class="tree-leaf">manual counter management</span></div>
+          <div><span class="tree-branch">├── </span><a href="page-02.html">best for: unknown number of repeats</a></div>
+          <div><span class="tree-branch">└── </span><a href="page-03.html">danger: infinite loops</a></div>
+        </div>
+        <div><span class="tree-branch">├── </span><strong style="color:#fbbf24;"><a href="page-04.html">FOR loop</a></strong></div>
+        <div class="tree-level-2">
+          <div><span class="tree-branch">├── </span><span class="tree-leaf">automatic iteration</span></div>
+          <div><span class="tree-branch">├── </span><a href="page-05.html">range() → start, stop, step</a></div>
+          <div><span class="tree-branch">├── </span><a href="page-06.html">lists → values directly</a></div>
+          <div><span class="tree-branch">└── </span><span class="tree-leaf">best for: known sequences</span></div>
+        </div>
+        <div><span class="tree-branch">├── </span><strong style="color:#fbbf24;"><a href="page-07.html">Flow Control</a></strong></div>
+        <div class="tree-level-2">
+          <div><span class="tree-branch">├── </span><a href="page-07.html">break → exit early</a></div>
+          <div><span class="tree-branch">└── </span><a href="page-07.html">continue → skip iteration</a></div>
+        </div>
+        <div><span class="tree-branch">└── </span><strong style="color:#fbbf24;"><a href="page-09.html">Common Patterns</a></strong></div>
+        <div class="tree-level-2">
+          <div><span class="tree-branch">├── </span><a href="page-09.html">accumulator</a></div>
+          <div><span class="tree-branch">├── </span><a href="page-09.html">search</a></div>
+          <div><span class="tree-branch">├── </span><a href="page-09.html">filter</a></div>
+          <div><span class="tree-branch">└── </span><a href="page-09.html">input validation</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/syntax-highlight.js"></script>
+<script src="js/robot-game.js"></script>
+<script src="js/nav.js"></script>
+<script>
+(function() {
+  const canvas   = document.getElementById('robot-canvas');
+  const codeArea = document.getElementById('robot-code-area');
+
+  const LEVEL_DESCS = [
+    'Level 1: Move forward 5 steps to reach the flag.',
+    'Level 2: Move forward 3 steps, turn right, then move forward 4 steps.',
+    'Level 3: Navigate the spiral maze to reach the flag. Use wall detection to turn when blocked.',
+  ];
+
+  const game = new RobotGame(canvas, codeArea, {
+    onLevelComplete: (levelIdx) => {
+      // Update level button
+      const btn = document.getElementById(`lvl-btn-${levelIdx}`);
+      if (btn) btn.textContent += ' ✓';
+
+      // Check all levels done
+      if (game.completedLevels.size >= 3) {
+        document.getElementById('congrats-box').classList.remove('hidden');
+        document.getElementById('congrats-box').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
+
+  window.selectLevel = function(idx) {
+    // Update tabs
+    [0,1,2].forEach(i => {
+      document.getElementById(`lvl-btn-${i}`).classList.toggle('active', i === idx);
+    });
+    document.getElementById('level-title').textContent = LEVEL_DESCS[idx];
+    game._clearSequence();
+    game.loadLevel(idx);
+    game.hintEl && game.hintEl.classList.add('hidden');
+  };
+})();
+</script>
+</body>
+</html>

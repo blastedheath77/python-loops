@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="page" content="8">
+  <title>Page 8 — Choosing the Right Loop | Python Loops</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="page-wrapper">
+  <header class="page-header">
+    <span class="phase-badge">Phase: Synthesis</span>
+    <h1>Choosing the Right Loop</h1>
+    <p class="subtitle">While vs For — a decision guide</p>
+  </header>
+
+  <div class="concept-box">
+    Use a <strong>for</strong> loop when you know in advance how many times to repeat (or you have a sequence to walk through).
+    Use a <strong>while</strong> loop when the number of repetitions depends on a condition you can't predict.
+  </div>
+
+  <!-- Widget: Loop Sorter -->
+  <div class="card">
+    <div class="card-title">Widget — Loop Sorter</div>
+    <p class="text-sm text-muted mb-2">Drag each scenario card to the correct loop type. Then click "Check Answers".</p>
+
+    <div class="sorter-wrapper">
+      <!-- Scenario pool -->
+      <div>
+        <h4 class="mb-1" style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;">Scenarios</h4>
+        <div id="scenario-pool" class="scenario-pool"></div>
+      </div>
+      <!-- Drop zones -->
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div class="loop-drop-zone" id="zone-for">
+          <h3 style="color:var(--color-primary);">&#128257; FOR loop</h3>
+          <p class="text-sm text-muted">Known sequence or count</p>
+          <div id="for-items" style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem;"></div>
+        </div>
+        <div class="loop-drop-zone" id="zone-while">
+          <h3 style="color:var(--color-secondary);">&#8734; WHILE loop</h3>
+          <p class="text-sm text-muted">Condition-dependent repetition</p>
+          <div id="while-items" style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="st-controls mt-2">
+      <button class="btn btn-primary" id="check-btn">Check Answers</button>
+      <button class="btn btn-ghost btn-sm" id="reset-sorter-btn">Reset</button>
+    </div>
+    <div id="score-display" class="hidden mt-2"></div>
+  </div>
+
+  <!-- Explanatory text -->
+  <div class="card">
+    <h3 class="mb-1">The decision heuristic</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+      <div style="border:2px solid var(--color-primary);border-radius:var(--radius);padding:1rem;">
+        <h4 style="color:var(--color-primary);margin-bottom:0.5rem;">Use <code>for</code> when…</h4>
+        <ul class="text-sm" style="padding-left:1.25rem;">
+          <li style="margin-bottom:0.3rem;">You have a list to process</li>
+          <li style="margin-bottom:0.3rem;">You know the exact count (<code>range(n)</code>)</li>
+          <li style="margin-bottom:0.3rem;">You're iterating a fixed sequence</li>
+          <li>The end is determined by data, not logic</li>
+        </ul>
+      </div>
+      <div style="border:2px solid var(--color-secondary);border-radius:var(--radius);padding:1rem;">
+        <h4 style="color:var(--color-secondary);margin-bottom:0.5rem;">Use <code>while</code> when…</h4>
+        <ul class="text-sm" style="padding-left:1.25rem;">
+          <li style="margin-bottom:0.3rem;">The stop condition is unpredictable</li>
+          <li style="margin-bottom:0.3rem;">You're waiting for user input</li>
+          <li style="margin-bottom:0.3rem;">You need to retry until something works</li>
+          <li>The loop count isn't known upfront</li>
+        </ul>
+      </div>
+    </div>
+    <p class="mt-2 text-sm text-muted">Many problems could use either loop type, but one is almost always cleaner and clearer. When in doubt, if you can easily express the repetition with <code>range()</code> or a list, use <code>for</code>.</p>
+  </div>
+
+  <div class="next-teaser">
+    <strong>Next up:</strong> Let's see loops in action solving real problems.
+  </div>
+</div>
+
+<script src="js/syntax-highlight.js"></script>
+<script src="js/drag-drop.js"></script>
+<script src="js/nav.js"></script>
+<script>
+(function() {
+  const SCENARIOS = [
+    { id: 1, text: 'Print each student\'s name from a class list', answer: 'for',   explain: 'You have a list to iterate — for is perfect.' },
+    { id: 2, text: 'Keep asking for a password until correct', answer: 'while', explain: 'You don\'t know how many tries the user will need.' },
+    { id: 3, text: 'Add up all numbers from 1 to 100', answer: 'for',   explain: 'range(1, 101) gives you the exact sequence.' },
+    { id: 4, text: 'Read lines from a file until you find "STOP"', answer: 'while', explain: 'You don\'t know which line contains STOP.' },
+    { id: 5, text: 'Count down from 10 to 1', answer: 'for',   explain: 'range(10, 0, -1) handles this perfectly.' },
+    { id: 6, text: 'Roll a die until you get a 6', answer: 'while', explain: 'The number of rolls is unpredictable.' },
+    { id: 7, text: 'Process every item in a shopping cart', answer: 'for',   explain: 'The cart is a list — iterate it directly.' },
+    { id: 8, text: 'Withdraw £10 until balance is below £50', answer: 'while', explain: 'The number of withdrawals depends on the starting balance.' },
+  ];
+
+  const pool = document.getElementById('scenario-pool');
+  const forItems = document.getElementById('for-items');
+  const whileItems = document.getElementById('while-items');
+  const dd = new DragDrop();
+  const placed = {}; // id → zone
+
+  // Shuffle scenarios
+  const shuffled = [...SCENARIOS].sort(() => Math.random() - 0.5);
+
+  function makeCard(scenario) {
+    const card = document.createElement('div');
+    card.className = 'scenario-card';
+    card.dataset.id = scenario.id;
+    card.textContent = scenario.text;
+    return card;
+  }
+
+  // Render pool
+  function renderPool() {
+    pool.innerHTML = '';
+    forItems.innerHTML = '';
+    whileItems.innerHTML = '';
+    Object.keys(placed).forEach(k => delete placed[k]);
+
+    shuffled.forEach(s => {
+      const card = makeCard(s);
+      dd.makeDraggable(card, { data: s });
+      pool.appendChild(card);
+    });
+  }
+
+  // Make drop zones
+  function setupZones() {
+    function onDrop(draggedEl, zoneEl) {
+      const id = parseInt(draggedEl.dataset.id);
+      const zone = zoneEl.id === 'zone-for' ? 'for' : 'while';
+      placed[id] = zone;
+
+      // Move card to zone items container
+      const targetItems = zone === 'for' ? forItems : whileItems;
+      // Remove from wherever it is
+      draggedEl.remove();
+      targetItems.appendChild(draggedEl);
+
+      // Re-make draggable and update drop zones
+      dd.makeDraggable(draggedEl, { data: SCENARIOS.find(s => s.id === id) });
+    }
+
+    dd.makeDropZone(document.getElementById('zone-for'), onDrop);
+    dd.makeDropZone(document.getElementById('zone-while'), onDrop);
+    // Also allow dropping back to pool
+    dd.makeDropZone(pool, (draggedEl) => {
+      const id = parseInt(draggedEl.dataset.id);
+      delete placed[id];
+      draggedEl.remove();
+      pool.appendChild(draggedEl);
+      dd.makeDraggable(draggedEl, { data: SCENARIOS.find(s => s.id === id) });
+    });
+  }
+
+  renderPool();
+  setupZones();
+
+  document.getElementById('reset-sorter-btn').addEventListener('click', () => {
+    renderPool();
+    setupZones();
+    document.getElementById('score-display').classList.add('hidden');
+    document.querySelectorAll('.scenario-card').forEach(c => {
+      c.classList.remove('correct','incorrect');
+    });
+  });
+
+  document.getElementById('check-btn').addEventListener('click', () => {
+    let correct = 0;
+    const total = SCENARIOS.length;
+    const scoreEl = document.getElementById('score-display');
+
+    // Check cards in drop zones
+    [forItems, whileItems].forEach((container, zi) => {
+      const zone = zi === 0 ? 'for' : 'while';
+      Array.from(container.children).forEach(card => {
+        const id = parseInt(card.dataset.id);
+        const scenario = SCENARIOS.find(s => s.id === id);
+        if (!scenario) return;
+        if (scenario.answer === zone) {
+          card.classList.remove('incorrect');
+          card.classList.add('correct');
+          correct++;
+        } else {
+          card.classList.remove('correct');
+          card.classList.add('incorrect');
+          // Show explanation tooltip
+          if (!card.querySelector('.explain-text')) {
+            const tip = document.createElement('div');
+            tip.className = 'explain-text text-sm mt-1';
+            tip.style.color = '#64748b';
+            tip.textContent = `→ Should be ${scenario.answer.toUpperCase()}: ${scenario.explain}`;
+            card.appendChild(tip);
+          }
+        }
+      });
+    });
+
+    // Cards still in pool = unplaced
+    const unplaced = total - forItems.children.length - whileItems.children.length;
+    scoreEl.classList.remove('hidden');
+    const pct = Math.round((correct / total) * 100);
+    scoreEl.innerHTML = `
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="badge ${correct >= 6 ? 'badge-success' : 'badge-warn'}" style="font-size:1rem;padding:0.35rem 0.75rem;">${correct} / ${total} correct</span>
+        <span class="text-sm text-muted">${unplaced > 0 ? `(${unplaced} scenario${unplaced>1?'s':''} not placed yet)` : ''}</span>
+        ${correct === total ? '<span class="badge badge-success">Perfect score!</span>' : ''}
+      </div>
+    `;
+  });
+})();
+</script>
+</body>
+</html>

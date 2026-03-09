@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Loops — An Interactive Guide</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { padding-bottom: 2rem; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(37,99,235,0.1);
+      color: var(--color-primary);
+      border: 1px solid rgba(37,99,235,0.25);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.25rem 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.85rem 2.25rem;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+    }
+    .hero-cta:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+      text-decoration: none;
+    }
+    .phase-divider {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #94a3b8;
+      margin: 2rem 0 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .phase-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+  <!-- Hero -->
+  <section class="hero" style="padding-top:3rem;padding-bottom:2.5rem;">
+    <div class="hero-badge">Interactive Learning</div>
+    <h1 style="font-size:clamp(2.2rem,6vw,3.5rem);margin-bottom:0.6rem;">Python Loops</h1>
+    <p class="lead">
+      An interactive guide for beginners. Master <code>while</code> and <code>for</code> loops
+      through hands-on exploration. No experience needed — just curiosity.
+    </p>
+    <a href="page-01.html" class="hero-cta">Start Learning →</a>
+
+    <div style="display:flex;justify-content:center;gap:2rem;margin-top:2rem;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="font-size:1.6rem;font-weight:700;color:var(--color-primary);">10</div>
+        <div class="text-sm text-muted">interactive pages</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:1.6rem;font-weight:700;color:var(--color-secondary);">5+</div>
+        <div class="text-sm text-muted">animated widgets</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:1.6rem;font-weight:700;color:var(--color-tertiary);">0</div>
+        <div class="text-sm text-muted">prior experience needed</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Page grid -->
+  <section>
+    <div class="phase-divider">Phase 1 — Foundations</div>
+    <div class="page-grid">
+      <a href="page-01.html" class="page-card">
+        <div class="page-num">Page 1</div>
+        <div class="page-title">Why Loops?</div>
+        <div class="page-desc">See why repetition is the heart of programming through an interactive copy-paste demo.</div>
+      </a>
+      <a href="page-02.html" class="page-card">
+        <div class="page-num">Page 2</div>
+        <div class="page-title">The While Loop</div>
+        <div class="page-desc">Step through a while loop execution trace — watch variables change in real time.</div>
+      </a>
+      <a href="page-03.html" class="page-card">
+        <div class="page-num">Page 3</div>
+        <div class="page-title">Infinite Loops &amp; Conditions</div>
+        <div class="page-desc">Spot the bug in three broken loops, then fix and test each one.</div>
+      </a>
+    </div>
+
+    <div class="phase-divider">Phase 2 — Core Concepts</div>
+    <div class="page-grid">
+      <a href="page-04.html" class="page-card">
+        <div class="page-num">Page 4</div>
+        <div class="page-title">The For Loop</div>
+        <div class="page-desc">Compare while and for side-by-side with a shared step button.</div>
+      </a>
+      <a href="page-05.html" class="page-card">
+        <div class="page-num">Page 5</div>
+        <div class="page-title">range() Unpacked</div>
+        <div class="page-desc">Three sliders control start, stop, and step. Watch the number line update live.</div>
+      </a>
+      <a href="page-06.html" class="page-card">
+        <div class="page-num">Page 6</div>
+        <div class="page-title">Looping Through Lists</div>
+        <div class="page-desc">Animate a for loop over a list, then drag to reorder and re-run it.</div>
+      </a>
+      <a href="page-07.html" class="page-card">
+        <div class="page-num">Page 7</div>
+        <div class="page-title">Break &amp; Continue</div>
+        <div class="page-desc">Visualise flow arrows for break and continue, then test your understanding with a quiz.</div>
+      </a>
+    </div>
+
+    <div class="phase-divider">Phase 3 — Synthesis</div>
+    <div class="page-grid">
+      <a href="page-08.html" class="page-card">
+        <div class="page-num">Page 8</div>
+        <div class="page-title">Choosing the Right Loop</div>
+        <div class="page-desc">Drag 8 real-world scenarios into FOR or WHILE buckets and check your score.</div>
+      </a>
+      <a href="page-09.html" class="page-card">
+        <div class="page-num">Page 9</div>
+        <div class="page-title">Loops in the Wild</div>
+        <div class="page-desc">Four tabbed pattern labs: accumulator, search, filter, and input validation.</div>
+      </a>
+    </div>
+
+    <div class="phase-divider">Phase 4 — Final Challenge</div>
+    <div class="page-grid" style="max-width:340px;">
+      <a href="page-10.html" class="page-card" style="border-color:var(--color-primary);background:linear-gradient(135deg,rgba(37,99,235,0.04),rgba(124,58,237,0.04));">
+        <div class="page-num">Page 10</div>
+        <div class="page-title">The Loop Lab ✦</div>
+        <div class="page-desc">Guide a robot through three increasingly tricky mazes using drag-and-drop code blocks.</div>
+      </a>
+    </div>
+  </section>
+
+  <footer style="text-align:center;margin-top:3rem;padding-top:1.5rem;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:0.85rem;">
+    Python Loops — Pure HTML, CSS &amp; vanilla JavaScript. No frameworks. No installs.
+  </footer>
+</div>
+
+</body>
+</html>

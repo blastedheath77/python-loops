@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="page" content="7">
+  <title>Page 7 — Break &amp; Continue | Python Loops</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="page-wrapper">
+  <header class="page-header">
+    <span class="phase-badge">Phase: Core Concepts</span>
+    <h1>Break &amp; Continue</h1>
+    <p class="subtitle">Fine-tuning loop flow</p>
+  </header>
+
+  <div class="concept-box">
+    <strong><code>break</code></strong> immediately exits the entire loop.
+    <strong><code>continue</code></strong> skips the rest of the current iteration and jumps to the next one.
+    Both give you fine-grained control over what happens inside a loop.
+  </div>
+
+  <!-- Widget: Flow Control Visualiser -->
+  <div class="card">
+    <div class="card-title">Widget — Flow Control Visualiser</div>
+    <div id="flow-st"></div>
+
+    <div id="flow-summary" class="hidden mt-2">
+      <div class="concept-box" style="border-color:var(--color-success);background:rgba(22,163,74,0.05);font-style:normal;">
+        <strong>Summary:</strong>
+        Printed: <code>4</code>, <code>7</code>.
+        Skipped: <code>2</code> (2 &lt; 3), <code>1</code> (1 &lt; 3).
+        Found <code>9</code> and exited early.
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="card" id="quiz-card">
+    <div class="card-title">Predict the Output — Quiz</div>
+    <p class="text-sm text-muted mb-2">After watching the visualiser above, try this modified code:</p>
+    <pre><code id="quiz-code">numbers = [5, 3, 8, 2, 6]
+for num in numbers:
+    if num > 7:
+        break
+    if num % 2 == 0:
+        continue
+    print(num)</code></pre>
+    <p class="mt-2 mb-1"><strong>What will be printed?</strong></p>
+    <div class="mc-options" id="mc-options">
+      <button class="mc-btn" onclick="checkAnswer('A')">5<br>3<br>8</button>
+      <button class="mc-btn" onclick="checkAnswer('B')">5<br>3</button>
+      <button class="mc-btn" onclick="checkAnswer('C')">5<br>3<br>2<br>6</button>
+      <button class="mc-btn" onclick="checkAnswer('D')">3<br>5</button>
+    </div>
+    <div id="quiz-feedback" class="hidden mt-1"></div>
+
+    <!-- Post-quiz step-through -->
+    <div id="quiz-st-wrap" class="hidden mt-3">
+      <div class="var-watch-title mb-1">Animated explanation:</div>
+      <div id="quiz-st"></div>
+    </div>
+  </div>
+
+  <!-- Explanatory text -->
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <h4 style="color:var(--color-error);">break — exit early</h4>
+        <ul class="text-sm" style="padding-left:1.25rem;margin-top:0.5rem;">
+          <li style="margin-bottom:0.3rem;">Use when <em>searching</em> — stop once found</li>
+          <li style="margin-bottom:0.3rem;">Use to enforce a <em>limit</em></li>
+          <li>Exits the <strong>innermost</strong> loop only</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:var(--color-secondary);">continue — skip iteration</h4>
+        <ul class="text-sm" style="padding-left:1.25rem;margin-top:0.5rem;">
+          <li style="margin-bottom:0.3rem;">Use when <em>filtering</em> — ignore some items</li>
+          <li style="margin-bottom:0.3rem;">Keeps the loop <strong>running</strong></li>
+          <li>Jumps back to the loop condition / next item</li>
+        </ul>
+      </div>
+    </div>
+    <p class="mt-2 text-sm">Both <code>break</code> and <code>continue</code> work in <code>while</code> loops as well as <code>for</code> loops.</p>
+  </div>
+
+  <div class="next-teaser">
+    <strong>Next up:</strong> Now you know both loop types. But how do you choose which one to use?
+  </div>
+</div>
+
+<script src="js/syntax-highlight.js"></script>
+<script src="js/step-through.js"></script>
+<script src="js/nav.js"></script>
+<script>
+(function() {
+  // Highlight static code blocks
+  const quizCode = document.getElementById('quiz-code');
+  quizCode.innerHTML = highlightPython(quizCode.textContent);
+
+  // ── Main step-through trace ──
+  // numbers = [4, 7, 2, 9, 1, 8, 3]
+  // for num in numbers:
+  //     if num == 9:
+  //         print("Found 9!")
+  //         break
+  //     if num < 3:
+  //         continue
+  //     print(num)
+
+  const code = [
+    'numbers = [4, 7, 2, 9, 1, 8, 3]',
+    'for num in numbers:',
+    '    if num == 9:',
+    '        print("Found 9!")',
+    '        break',
+    '    if num < 3:',
+    '        continue',
+    '    print(num)'
+  ];
+
+  const steps = [
+    // Set up list
+    { lineIndex: 0, variables: { numbers: '[4, 7, 2, 9, 1, 8, 3]' }, output: null },
+    // num = 4
+    { lineIndex: 1, variables: { num: 4 }, output: null },
+    { lineIndex: 2, variables: {}, output: null, conditionBadge: '4 == 9 → False' },
+    { lineIndex: 5, variables: {}, output: null, conditionBadge: '4 < 3 → False' },
+    { lineIndex: 7, variables: {}, output: '4' },
+    // num = 7
+    { lineIndex: 1, variables: { num: 7 }, output: null },
+    { lineIndex: 2, variables: {}, output: null, conditionBadge: '7 == 9 → False' },
+    { lineIndex: 5, variables: {}, output: null, conditionBadge: '7 < 3 → False' },
+    { lineIndex: 7, variables: {}, output: '7' },
+    // num = 2
+    { lineIndex: 1, variables: { num: 2 }, output: null },
+    { lineIndex: 2, variables: {}, output: null, conditionBadge: '2 == 9 → False' },
+    { lineIndex: 5, variables: {}, output: null, conditionBadge: '2 < 3 → True' },
+    { lineIndex: 6, variables: {}, output: null, flowArrow: 'continue' },
+    // num = 9
+    { lineIndex: 1, variables: { num: 9 }, output: null },
+    { lineIndex: 2, variables: {}, output: null, conditionBadge: '9 == 9 → True' },
+    { lineIndex: 3, variables: {}, output: 'Found 9!' },
+    { lineIndex: 4, variables: {}, output: null, flowArrow: 'break' },
+  ];
+
+  const container = document.getElementById('flow-st');
+  const st = new StepThrough(container, { code, steps, showFlowArrows: true });
+
+  // Show summary when animation finishes
+  const origRunAll = st.runAll.bind(st);
+  // Detect completion via run-all — we wrap the reset button to also hide summary
+  // Use a simple approach: watch for last step
+  function checkSummary() {
+    // Show summary after step 16 (last)
+    const info = container.querySelector('.st-controls');
+    // Check if stepBtn is disabled after a short delay
+    setTimeout(() => {
+      const stepBtn = container.querySelector('.btn-primary');
+      if (stepBtn && stepBtn.disabled) {
+        document.getElementById('flow-summary').classList.remove('hidden');
+      }
+    }, 100);
+  }
+
+  // Patch step button
+  const controls = container.querySelector ? null : null;
+  // Use MutationObserver to detect when step button becomes disabled
+  const obs = new MutationObserver(() => {
+    const stepBtn = container.querySelector('.btn-primary');
+    if (stepBtn && stepBtn.disabled) {
+      document.getElementById('flow-summary').classList.remove('hidden');
+    }
+  });
+  obs.observe(container, { subtree: true, attributes: true });
+
+  // ── Quiz ──
+  window.checkAnswer = function(choice) {
+    const feedback = document.getElementById('quiz-feedback');
+    const options  = document.querySelectorAll('.mc-btn');
+    feedback.classList.remove('hidden');
+
+    options.forEach(btn => btn.disabled = true);
+
+    // Correct answer is B: 5, 3
+    if (choice === 'B') {
+      options[1].classList.add('correct');
+      feedback.innerHTML = `<span class="badge badge-success">Correct!</span> <span class="text-sm">
+        <code>8 &gt; 7</code> → break exits at 8.
+        <code>2 % 2 == 0</code> → continue skips 2.
+        <code>6 % 2 == 0</code> would be skipped too, but we break before reaching 6.
+        Only 5 and 3 are odd numbers before the break.
+      </span>`;
+    } else {
+      options[1].classList.add('correct');
+      options[['A','B','C','D'].indexOf(choice)].classList.add('incorrect');
+      feedback.innerHTML = `<span class="badge badge-error">Not quite.</span> <span class="text-sm">
+        The correct output is <code>5</code> and <code>3</code>.
+        When <code>8</code> is reached, <code>8 &gt; 7</code> is True, so <code>break</code> exits immediately.
+      </span>`;
+    }
+
+    // Show explanation step-through
+    document.getElementById('quiz-st-wrap').classList.remove('hidden');
+
+    const quizCode = [
+      'numbers = [5, 3, 8, 2, 6]',
+      'for num in numbers:',
+      '    if num > 7:',
+      '        break',
+      '    if num % 2 == 0:',
+      '        continue',
+      '    print(num)'
+    ];
+    const quizSteps = [
+      { lineIndex: 0, variables: { numbers: '[5, 3, 8, 2, 6]' }, output: null },
+      { lineIndex: 1, variables: { num: 5 }, output: null },
+      { lineIndex: 2, variables: {}, output: null, conditionBadge: '5 > 7 → False' },
+      { lineIndex: 4, variables: {}, output: null, conditionBadge: '5 % 2 == 0 → False' },
+      { lineIndex: 6, variables: {}, output: '5' },
+      { lineIndex: 1, variables: { num: 3 }, output: null },
+      { lineIndex: 2, variables: {}, output: null, conditionBadge: '3 > 7 → False' },
+      { lineIndex: 4, variables: {}, output: null, conditionBadge: '3 % 2 == 0 → False' },
+      { lineIndex: 6, variables: {}, output: '3' },
+      { lineIndex: 1, variables: { num: 8 }, output: null },
+      { lineIndex: 2, variables: {}, output: null, conditionBadge: '8 > 7 → True' },
+      { lineIndex: 3, variables: {}, output: null, flowArrow: 'break' },
+    ];
+
+    const quizSt = document.getElementById('quiz-st');
+    new StepThrough(quizSt, { code: quizCode, steps: quizSteps, showFlowArrows: true });
+  };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="page" content="6">
+  <title>Page 6 — Looping Through Lists | Python Loops</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="page-wrapper">
+  <header class="page-header">
+    <span class="phase-badge">Phase: Core Concepts</span>
+    <h1>Looping Through Lists</h1>
+    <p class="subtitle">One item at a time</p>
+  </header>
+
+  <div class="concept-box">
+    <code>for</code> loops aren't limited to numbers. They can step through any sequence — a list of strings,
+    a list of mixed values, even a string character by character.
+    The loop variable takes the <strong>value</strong> of each item in turn.
+  </div>
+
+  <!-- Part A: Step-Through -->
+  <div class="card">
+    <div class="card-title">Part A — Step-Through Animator</div>
+    <div id="list-st"></div>
+
+    <!-- Colour cards display -->
+    <div class="mt-2">
+      <div class="var-watch-title mb-1">The list — current item glows</div>
+      <div class="colour-cards" id="colour-cards-display"></div>
+    </div>
+  </div>
+
+  <!-- Part B: Reorder -->
+  <div class="card">
+    <div class="card-title">Part B — Reorder &amp; Re-run</div>
+    <p class="text-sm text-muted mb-2">Drag the colour cards to change their order, then re-run the animation.</p>
+    <div class="colour-cards" id="colour-cards-sortable"></div>
+    <div class="st-controls mt-2">
+      <button class="btn btn-primary btn-sm" id="rerun-btn">&#9654; Run with new order</button>
+      <button class="btn btn-ghost btn-sm" id="reset-order-btn">Reset order</button>
+    </div>
+    <div class="mt-2">
+      <div class="var-watch-title mb-1">Output</div>
+      <div class="console-output" id="rerun-output" style="min-height:80px;"></div>
+    </div>
+  </div>
+
+  <!-- Explanatory text -->
+  <div class="card">
+    <h3 class="mb-1">Iterating lists directly</h3>
+    <p>When you write <code>for colour in colours:</code>, the variable <code>colour</code> is assigned each list item's <em>value</em> directly — not its index number.</p>
+    <p>This makes the code read naturally: "for each colour in colours, do something with colour."</p>
+    <h4 class="mt-2 mb-1">Strings are sequences too</h4>
+    <pre><code id="str-code">for char in "hello":
+    print(char)
+# prints: h, e, l, l, o</code></pre>
+    <p class="mt-1 text-sm">Every character in a string can be visited one by one — because a string is just a sequence of characters.</p>
+  </div>
+
+  <div class="next-teaser">
+    <strong>Next up:</strong> Sometimes you want to exit a loop early, or skip certain items. Python has tools for that.
+  </div>
+</div>
+
+<script src="js/syntax-highlight.js"></script>
+<script src="js/step-through.js"></script>
+<script src="js/drag-drop.js"></script>
+<script src="js/nav.js"></script>
+<script>
+(function() {
+  // Highlight static code
+  const strCode = document.getElementById('str-code');
+  strCode.innerHTML = highlightPython(strCode.textContent);
+
+  const COLOURS = [
+    { name: 'red',    bg: '#ef4444', text: '#fff' },
+    { name: 'green',  bg: '#16a34a', text: '#fff' },
+    { name: 'blue',   bg: '#2563eb', text: '#fff' },
+    { name: 'yellow', bg: '#ca8a04', text: '#fff' },
+  ];
+
+  // ── Part A: Step-through animator ──
+  function makeSteps(colours) {
+    const steps = [];
+    colours.forEach((c, idx) => {
+      steps.push({ lineIndex: 1, variables: { colour: `"${c.name}"` }, output: c.name, conditionBadge: null, colourIdx: idx });
+    });
+    steps.push({ lineIndex: 1, variables: {}, output: null, conditionBadge: null, colourIdx: -1 });
+    return steps;
+  }
+
+  const code = [
+    'colours = ["red", "green", "blue", "yellow"]',
+    'for colour in colours:',
+    '    print(colour)'
+  ];
+
+  const container = document.getElementById('list-st');
+  let st = new StepThrough(container, {
+    code,
+    steps: makeSteps(COLOURS),
+    showFlowArrows: false
+  });
+
+  // Render static colour cards for Part A display
+  const displayCards = document.getElementById('colour-cards-display');
+  function renderDisplayCards(colours) {
+    displayCards.innerHTML = '';
+    colours.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'colour-card';
+      card.style.background = c.bg;
+      card.style.color = c.text;
+      card.textContent = c.name;
+      card.dataset.name = c.name;
+      displayCards.appendChild(card);
+    });
+  }
+  renderDisplayCards(COLOURS);
+
+  // Hook into step-through to highlight current card
+  // We patch the step method by subclassing (simple wrapper)
+  const origStep = st.step.bind(st);
+  let stepIdx = -1;
+  const origSteps = makeSteps(COLOURS);
+
+  function highlightCard(idx) {
+    displayCards.querySelectorAll('.colour-card').forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+    });
+  }
+
+  // Monkey-patch step
+  const origStepFn = StepThrough.prototype.step;
+  // Instead, listen to the animation by wrapping controls
+  // Re-implement via override approach:
+  const origContainerStep = container.querySelector;
+
+  // Since StepThrough doesn't expose a callback, we'll use a MutationObserver
+  // to detect when the active line changes and sync the card highlight
+  const observer = new MutationObserver(() => {
+    const activeLine = container.querySelector('.st-code-line.active');
+    if (!activeLine) { highlightCard(-1); return; }
+    const varTable = container.querySelector('.var-table');
+    if (!varTable) return;
+    const rows = varTable.querySelectorAll('tr');
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if (cells.length >= 3 && cells[0].textContent.trim() === 'colour') {
+        const val = cells[2].textContent.replace(/"/g,'').trim();
+        const idx = COLOURS.findIndex(c => c.name === val);
+        highlightCard(idx);
+      }
+    });
+  });
+  observer.observe(container, { subtree: true, attributes: true, attributeFilter: ['class'] });
+
+  // Reset card highlights when reset is clicked
+  const resetBtn = container.querySelector('.btn-outline');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => highlightCard(-1));
+  }
+
+  // ── Part B: Sortable colour cards ──
+  let currentOrder = [...COLOURS];
+  const sortableEl = document.getElementById('colour-cards-sortable');
+
+  function renderSortableCards(colours) {
+    sortableEl.innerHTML = '';
+    colours.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'colour-card';
+      card.style.background = c.bg;
+      card.style.color = c.text;
+      card.textContent = c.name;
+      card.dataset.name = c.name;
+      sortableEl.appendChild(card);
+    });
+    setupSortable();
+  }
+
+  const dd = new DragDrop();
+  function setupSortable() {
+    dd.makeSortable(sortableEl, (newOrder) => {
+      currentOrder = newOrder.map(el => COLOURS.find(c => c.name === el.dataset.name));
+    });
+  }
+
+  renderSortableCards(COLOURS);
+
+  // Re-run with current order
+  document.getElementById('rerun-btn').addEventListener('click', () => {
+    const btn = document.getElementById('rerun-btn');
+    btn.disabled = true;
+    const output = document.getElementById('rerun-output');
+    output.textContent = '';
+    // Read current DOM order
+    const domCards = Array.from(sortableEl.querySelectorAll('.colour-card'));
+    const orderedColours = domCards.map(el => COLOURS.find(c => c.name === el.dataset.name)).filter(Boolean);
+    let i = 0;
+    const names = orderedColours.map(c => c.name);
+
+    // Highlight each card in sequence
+    function animateNext() {
+      // Remove all active
+      domCards.forEach(c => c.classList.remove('active'));
+      if (i >= names.length) {
+        btn.disabled = false;
+        return;
+      }
+      domCards[i].classList.add('active');
+      output.textContent += names[i] + '\n';
+      i++;
+      setTimeout(animateNext, 500);
+    }
+    animateNext();
+  });
+
+  document.getElementById('reset-order-btn').addEventListener('click', () => {
+    currentOrder = [...COLOURS];
+    renderSortableCards(COLOURS);
+    document.getElementById('rerun-output').textContent = '';
+  });
+})();
+</script>
+</body>
+</html>

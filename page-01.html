@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="page" content="1">
+  <title>Page 1 — Why Loops? | Python Loops</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="page-wrapper">
+  <header class="page-header">
+    <span class="phase-badge">Phase: Foundations</span>
+    <h1>Why Loops?</h1>
+    <p class="subtitle">Repetition is the heart of programming</p>
+  </header>
+
+  <div class="concept-box">
+    Loops let a computer repeat actions automatically. Without them, you'd have to write the same line of code over and over.
+    With them, one instruction can do the work of thousands.
+  </div>
+
+  <!-- Widget: The Copy-Paste Problem -->
+  <div class="card">
+    <div class="card-title">Widget — The Copy-Paste Problem</div>
+    <div class="grid-2">
+      <!-- Left: Without a loop -->
+      <div id="panel-without">
+        <h3 style="margin-bottom:0.75rem;">Without a loop</h3>
+        <div id="without-code" class="code-block" style="min-height:3.5rem; margin-bottom:0.75rem;"></div>
+        <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+          <button class="btn btn-ghost btn-sm" id="add-line-btn">+ Add another line</button>
+          <span class="badge badge-warn" id="line-counter">1 / 50 lines written</span>
+        </div>
+        <p id="hint-text" class="text-muted text-sm hidden" style="font-style:italic;">
+          Tired yet? There's a better way&hellip;
+        </p>
+      </div>
+
+      <!-- Right: With a loop -->
+      <div id="panel-with" style="opacity:0.4;pointer-events:none;transition:opacity 0.4s;">
+        <h3 style="margin-bottom:0.75rem;">With a loop</h3>
+        <pre><code id="loop-code">for i in range(50):
+    print("Hello")</code></pre>
+        <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin:0.75rem 0;">
+          <button class="btn btn-primary btn-sm" id="run-loop-btn">&#9654; Run</button>
+          <span class="badge badge-info">50 lines, 2 lines of code</span>
+        </div>
+        <div id="loop-output" class="console-output" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Explanatory text -->
+  <div class="card">
+    <h3 class="mb-1">Programming is about automating repetition</h3>
+    <p>At its core, programming means teaching a computer to do things automatically — especially things that need to happen many times.
+       Imagine asking the computer to print "Hello" 1,000 times. You could type it 1,000 times, or you could write a <strong>loop</strong>.</p>
+    <p>Python gives you two main types of loops:</p>
+    <ul style="padding-left:1.5rem;margin-bottom:1rem;">
+      <li style="margin-bottom:0.4rem;"><strong><code>while</code></strong> — repeats <em>while</em> a condition is true. You decide what makes it stop.</li>
+      <li><strong><code>for</code></strong> — steps through a sequence of values automatically. Python counts for you.</li>
+    </ul>
+    <p>Both are powerful. Choosing which to use comes down to the problem at hand — and you'll learn exactly how over the next pages.</p>
+  </div>
+
+  <div class="next-teaser">
+    <strong>Next up:</strong> Let's start with the simplest loop: <code>while</code>.
+  </div>
+</div>
+
+<script src="js/syntax-highlight.js"></script>
+<script src="js/nav.js"></script>
+<script>
+(function() {
+  // ── Without-a-loop panel ──
+  const withoutCode = document.getElementById('without-code');
+  const addLineBtn  = document.getElementById('add-line-btn');
+  const lineCounter = document.getElementById('line-counter');
+  const hintText    = document.getElementById('hint-text');
+  const panelWith   = document.getElementById('panel-with');
+
+  let lineCount = 1;
+  const MAX_LINES = 50;
+
+  function renderWithoutCode() {
+    let html = '';
+    for (let i = 0; i < lineCount; i++) {
+      html += highlightPython('print("Hello")') + '\n';
+    }
+    withoutCode.innerHTML = html;
+    lineCounter.textContent = `${lineCount} / ${MAX_LINES} lines written`;
+  }
+
+  renderWithoutCode();
+
+  addLineBtn.addEventListener('click', () => {
+    if (lineCount >= MAX_LINES) return;
+    lineCount++;
+    renderWithoutCode();
+    // Show hint after 5 clicks
+    if (lineCount >= 5) {
+      hintText.classList.remove('hidden');
+      // Unlock right panel
+      panelWith.style.opacity = '1';
+      panelWith.style.pointerEvents = 'auto';
+    }
+    if (lineCount >= MAX_LINES) {
+      addLineBtn.disabled = true;
+      addLineBtn.textContent = '50 lines — full!';
+    }
+  });
+
+  // ── With-a-loop panel ──
+  const runLoopBtn   = document.getElementById('run-loop-btn');
+  const loopOutput   = document.getElementById('loop-output');
+  let animRunning = false;
+
+  // Highlight the for-loop code
+  const loopCodeEl = document.getElementById('loop-code');
+  loopCodeEl.innerHTML = highlightPython(loopCodeEl.textContent);
+
+  runLoopBtn.addEventListener('click', () => {
+    if (animRunning) return;
+    animRunning = true;
+    loopOutput.textContent = '';
+    runLoopBtn.disabled = true;
+    let i = 0;
+    const DELAY = 40;
+    function step() {
+      if (i >= 50) {
+        animRunning = false;
+        runLoopBtn.disabled = false;
+        return;
+      }
+      loopOutput.textContent += 'Hello\n';
+      loopOutput.scrollTop = loopOutput.scrollHeight;
+      i++;
+      setTimeout(step, DELAY);
+    }
+    step();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="page" content="2">
+  <title>Page 2 — The While Loop | Python Loops</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="page-wrapper">
+  <header class="page-header">
+    <span class="phase-badge">Phase: Foundations</span>
+    <h1>The While Loop</h1>
+    <p class="subtitle">Repeat while something is true</p>
+  </header>
+
+  <div class="concept-box">
+    A <code>while</code> loop checks a condition before each repetition.
+    If the condition is <strong>True</strong>, the loop body runs.
+    If <strong>False</strong>, the loop stops.
+    The condition is checked every single time.
+  </div>
+
+  <!-- Widget: Step-Through Animator -->
+  <div class="card">
+    <div class="card-title">Widget — Step-Through Animator</div>
+    <div id="step-container"></div>
+  </div>
+
+  <!-- Anatomy of a while loop -->
+  <div class="card">
+    <h3 class="mb-1">Anatomy of a while loop</h3>
+    <pre><code id="anatomy-code">while count &lt; 5:
+    print(count)
+    count = count + 1</code></pre>
+    <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.6rem;">
+      <div style="display:flex;align-items:flex-start;gap:0.75rem;">
+        <span class="badge badge-info">while</span>
+        <span>The keyword that starts the loop.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.75rem;">
+        <span class="badge badge-warn">condition</span>
+        <span><code>count &lt; 5</code> — any expression that evaluates to True or False.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.75rem;">
+        <span class="badge badge-info">:</span>
+        <span>The colon ends the while line and introduces the indented body.</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.75rem;">
+        <span class="badge badge-warn">body</span>
+        <span>The indented lines that run each iteration. They <em>must</em> eventually make the condition False.</span>
+      </div>
+    </div>
+
+    <div class="concept-box mt-3" style="border-color:var(--color-error);background:rgba(220,38,38,0.05);">
+      <strong>Infinite loop danger:</strong> If the condition never becomes False, the loop runs forever and
+      your program freezes. Always ask: "What will make this condition eventually become False?"
+    </div>
+  </div>
+
+  <div class="next-teaser">
+    <strong>Next up:</strong> What if we forget to update the counter? Things get&hellip; infinite.
+  </div>
+</div>
+
+<script src="js/syntax-highlight.js"></script>
+<script src="js/step-through.js"></script>
+<script src="js/nav.js"></script>
+<script>
+(function() {
+  // Highlight static code block
+  const anatomyEl = document.getElementById('anatomy-code');
+  anatomyEl.innerHTML = highlightPython(anatomyEl.textContent);
+
+  // Full execution trace for:
+  //   count = 0
+  //   while count < 5:
+  //       print(count)
+  //       count = count + 1
+
+  const code = [
+    'count = 0',
+    'while count < 5:',
+    '    print(count)',
+    '    count = count + 1',
+    'print("End")'
+  ];
+
+  const steps = [
+    { lineIndex: 0, variables: { count: 0 }, output: null, conditionBadge: null },
+    { lineIndex: 1, variables: {}, output: null, conditionBadge: '0 < 5 → True' },
+    { lineIndex: 2, variables: {}, output: '0', conditionBadge: null },
+    { lineIndex: 3, variables: { count: 1 }, output: null, conditionBadge: null },
+    { lineIndex: 1, variables: {}, output: null, conditionBadge: '1 < 5 → True' },
+    { lineIndex: 2, variables: {}, output: '1', conditionBadge: null },
+    { lineIndex: 3, variables: { count: 2 }, output: null, conditionBadge: null },
+    { lineIndex: 1, variables: {}, output: null, conditionBadge: '2 < 5 → True' },
+    { lineIndex: 2, variables: {}, output: '2', conditionBadge: null },
+    { lineIndex: 3, variables: { count: 3 }, output: null, conditionBadge: null },
+    { lineIndex: 1, variables: {}, output: null, conditionBadge: '3 < 5 → True' },
+    { lineIndex: 2, variables: {}, output: '3', conditionBadge: null },
+    { lineIndex: 3, variables: { count: 4 }, output: null, conditionBadge: null },
+    { lineIndex: 1, variables: {}, output: null, conditionBadge: '4 < 5 → True' },
+    { lineIndex: 2, variables: {}, output: '4', conditionBadge: null },
+    { lineIndex: 3, variables: { count: 5 }, output: null, conditionBadge: null },
+    { lineIndex: 1, variables: {}, output: null, conditionBadge: '5 < 5 → False' },
+    { lineIndex: 4, variables: {}, output: 'End', conditionBadge: null }
+  ];
+
+  const container = document.getElementById('step-container');
+  new StepThrough(container, { code, steps, showFlowArrows: false });
+})();
+</script>
+</body>
+</html>

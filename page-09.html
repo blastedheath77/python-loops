@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="page" content="9">
+  <title>Page 9 — Loops in the Wild | Python Loops</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="page-wrapper">
+  <header class="page-header">
+    <span class="phase-badge">Phase: Synthesis</span>
+    <h1>Loops in the Wild</h1>
+    <p class="subtitle">Real patterns you'll use every day</p>
+  </header>
+
+  <div class="concept-box">
+    Most loop tasks follow a handful of common patterns: accumulating a total, finding a value, filtering a list,
+    building a new list, or validating user input. Recognising these patterns makes writing loops much faster.
+  </div>
+
+  <!-- Pattern Lab -->
+  <div class="card">
+    <div class="card-title">Widget — Pattern Lab</div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-acc"  onclick="switchTab('acc')">Accumulator</button>
+      <button class="tab-btn"        id="tab-srch" onclick="switchTab('srch')">Search</button>
+      <button class="tab-btn"        id="tab-filt" onclick="switchTab('filt')">Filter</button>
+      <button class="tab-btn"        id="tab-val"  onclick="switchTab('val')">Input Validation</button>
+    </div>
+
+    <!-- ── Tab 1: Accumulator ── -->
+    <div id="panel-acc">
+      <p class="text-sm text-muted mb-2"><strong>Pattern:</strong> Start with 0, add each item, get a total.</p>
+      <div id="acc-st"></div>
+      <div class="mt-2">
+        <div class="var-watch-title mb-1">Running total (bar chart)</div>
+        <div class="bar-chart" id="acc-bars"></div>
+      </div>
+      <div class="mt-2">
+        <div class="var-watch-title mb-1">Edit the numbers (click to change)</div>
+        <div id="acc-nums" style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;"></div>
+        <button class="btn btn-ghost btn-sm mt-1" id="acc-rebuild">Apply Changes</button>
+      </div>
+    </div>
+
+    <!-- ── Tab 2: Search ── -->
+    <div id="panel-srch" class="hidden">
+      <p class="text-sm text-muted mb-2"><strong>Pattern:</strong> Loop through a list and stop when you find what you're looking for.</p>
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <label class="text-sm" style="font-weight:600;">Search for:</label>
+        <select class="input-field" id="search-target" style="min-width:140px;">
+          <option value="Alice">Alice</option>
+          <option value="Bob">Bob</option>
+          <option value="Charlie" selected>Charlie</option>
+          <option value="Diana">Diana</option>
+          <option value="Eve">Eve (not in list)</option>
+        </select>
+        <button class="btn btn-primary btn-sm" id="search-rebuild">Rebuild &amp; Run</button>
+      </div>
+      <div id="srch-st"></div>
+    </div>
+
+    <!-- ── Tab 3: Filter ── -->
+    <div id="panel-filt" class="hidden">
+      <p class="text-sm text-muted mb-2"><strong>Pattern:</strong> Walk through a list and only print items that match a condition.</p>
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <label class="text-sm" style="font-weight:600;">Threshold (≥):</label>
+        <input type="range" id="filt-threshold" min="1" max="20" value="10" style="width:160px;accent-color:var(--color-primary);">
+        <span id="filt-val" style="font-family:var(--font-code);font-weight:700;min-width:2rem;">10</span>
+      </div>
+      <div id="filt-code-wrap" class="code-block" style="margin-bottom:1rem;"></div>
+      <div class="var-watch-title mb-1">Filtered output:</div>
+      <div class="console-output" id="filt-output" style="min-height:60px;"></div>
+    </div>
+
+    <!-- ── Tab 4: Input Validation ── -->
+    <div id="panel-val" class="hidden">
+      <p class="text-sm text-muted mb-2"><strong>Pattern:</strong> Keep looping until the user provides valid input.</p>
+      <pre style="margin-bottom:1rem;"><code id="val-code">password = ""
+while password != "secret":
+    password = input("Enter password: ")
+print("Access granted!")</code></pre>
+      <div class="pw-prompt mb-1">
+        <input class="input-field" id="pw-input" type="text" placeholder='Type a password…' style="max-width:240px;">
+        <button class="btn btn-primary btn-sm" id="pw-submit">Submit</button>
+      </div>
+      <p class="text-sm text-muted mb-1">Hint: the correct password is <code>secret</code></p>
+      <div class="pw-log" id="pw-log"></div>
+    </div>
+  </div>
+
+  <!-- Pattern descriptions -->
+  <div class="card">
+    <h3 class="mb-2">The five essential patterns</h3>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;">
+      <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+        <span class="badge badge-info" style="min-width:7rem;justify-content:center;">Accumulator</span>
+        <span class="text-sm">Start at 0, add each item. Works for sum, product, count.</span>
+      </div>
+      <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+        <span class="badge badge-success" style="min-width:7rem;justify-content:center;">Search</span>
+        <span class="text-sm">Loop until you find a match, then <code>break</code>. Return True/False or the item.</span>
+      </div>
+      <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+        <span class="badge badge-warn" style="min-width:7rem;justify-content:center;">Filter</span>
+        <span class="text-sm">Use an <code>if</code> condition to skip items that don't qualify.</span>
+      </div>
+      <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+        <span class="badge badge-info" style="min-width:7rem;justify-content:center;">Build list</span>
+        <span class="text-sm">Start with an empty list, <code>append()</code> items that meet a condition.</span>
+      </div>
+      <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+        <span class="badge" style="background:#ede9fe;color:#6d28d9;min-width:7rem;justify-content:center;">Validation</span>
+        <span class="text-sm">Use <code>while</code> to keep asking until a valid answer is given.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="next-teaser">
+    <strong>Next up:</strong> Time to put everything together. Can you guide a robot through a maze?
+  </div>
+</div>
+
+<script src="js/syntax-highlight.js"></script>
+<script src="js/step-through.js"></script>
+<script src="js/nav.js"></script>
+<script>
+(function() {
+  // Highlight val code
+  const valCode = document.getElementById('val-code');
+  valCode.innerHTML = highlightPython(valCode.textContent);
+
+  // ── Tab switching ──
+  const tabs   = ['acc','srch','filt','val'];
+  const panels = { acc: 'panel-acc', srch: 'panel-srch', filt: 'panel-filt', val: 'panel-val' };
+
+  window.switchTab = function(tab) {
+    tabs.forEach(t => {
+      document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tab);
+      document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+    });
+  };
+
+  // ══════════════════════════════════════
+  // Tab 1 — Accumulator
+  // ══════════════════════════════════════
+  let accNums = [3, 7, 2, 5];
+  let accSt = null;
+  let accBarTimer = null;
+
+  function buildAccSteps(nums) {
+    const code = [
+      `total = 0`,
+      `for num in [${nums.join(', ')}]:`,
+      `    total = total + num`,
+      `print(total)  # ${nums.reduce((a,b)=>a+b,0)}`
+    ];
+    const steps = [];
+    steps.push({ lineIndex: 0, variables: { total: 0 }, output: null });
+    let running = 0;
+    nums.forEach(n => {
+      steps.push({ lineIndex: 1, variables: { num: n }, output: null });
+      running += n;
+      steps.push({ lineIndex: 2, variables: { total: running }, output: null });
+    });
+    steps.push({ lineIndex: 3, variables: {}, output: String(nums.reduce((a,b)=>a+b,0)) });
+    return { code, steps };
+  }
+
+  function renderAccBars(nums) {
+    const barsEl = document.getElementById('acc-bars');
+    barsEl.innerHTML = '';
+    const max = nums.reduce((a,b)=>a+b,0) || 1;
+    let running = 0;
+    nums.forEach(n => {
+      running += n;
+      const col = document.createElement('div');
+      col.className = 'bar-col';
+      const fill = document.createElement('div');
+      fill.className = 'bar-fill';
+      fill.style.height = '0%';
+      fill.dataset.target = Math.round((running / max) * 100);
+      const lbl = document.createElement('div');
+      lbl.className = 'bar-label';
+      lbl.textContent = running;
+      col.appendChild(fill);
+      col.appendChild(lbl);
+      barsEl.appendChild(col);
+    });
+  }
+
+  function animateBars() {
+    if (accBarTimer) clearInterval(accBarTimer);
+    const fills = document.querySelectorAll('#acc-bars .bar-fill');
+    let i = 0;
+    accBarTimer = setInterval(() => {
+      if (i >= fills.length) { clearInterval(accBarTimer); return; }
+      fills[i].style.height = fills[i].dataset.target + '%';
+      i++;
+    }, 600);
+  }
+
+  function buildAccWidget() {
+    const { code, steps } = buildAccSteps(accNums);
+    const container = document.getElementById('acc-st');
+    if (accSt) {
+      accSt.reconfigure({ code, steps });
+    } else {
+      accSt = new StepThrough(container, { code, steps, showFlowArrows: false });
+    }
+    renderAccBars(accNums);
+
+    // Watch for animation to animate bars
+    const obs = new MutationObserver(() => {
+      const stepBtn = container.querySelector('.btn-primary');
+      if (stepBtn && stepBtn.disabled) animateBars();
+    });
+    obs.observe(container, { subtree: true, attributes: true });
+  }
+
+  // Editable numbers
+  function renderAccNums() {
+    const numsEl = document.getElementById('acc-nums');
+    numsEl.innerHTML = '';
+    accNums.forEach((n, i) => {
+      const inp = document.createElement('input');
+      inp.type = 'number';
+      inp.value = n;
+      inp.className = 'fix-input';
+      inp.style.cssText = 'width:64px;text-align:center;';
+      inp.dataset.idx = i;
+      numsEl.appendChild(inp);
+    });
+  }
+
+  document.getElementById('acc-rebuild').addEventListener('click', () => {
+    const inputs = document.querySelectorAll('#acc-nums input');
+    accNums = Array.from(inputs).map(inp => parseInt(inp.value) || 0);
+    buildAccWidget();
+    renderAccNums();
+  });
+
+  renderAccNums();
+  buildAccWidget();
+
+  // ══════════════════════════════════════
+  // Tab 2 — Search
+  // ══════════════════════════════════════
+  const NAMES = ['Alice', 'Bob', 'Charlie', 'Diana'];
+  let srchSt = null;
+
+  function buildSearchSteps(target) {
+    const inList = NAMES.includes(target);
+    const code = [
+      `names = ["Alice", "Bob", "Charlie", "Diana"]`,
+      `target = "${target}"`,
+      `for name in names:`,
+      `    if name == target:`,
+      `        print("Found!")`,
+      `        break`,
+      inList ? `# Found at "${target}"!` : `# "${target}" not in list`
+    ];
+    const steps = [];
+    steps.push({ lineIndex: 0, variables: { names: '["Alice","Bob","Charlie","Diana"]' }, output: null });
+    steps.push({ lineIndex: 1, variables: { target: `"${target}"` }, output: null });
+    let found = false;
+    for (const name of NAMES) {
+      steps.push({ lineIndex: 2, variables: { name: `"${name}"` }, output: null });
+      const match = name === target;
+      steps.push({ lineIndex: 3, variables: {}, output: null, conditionBadge: `"${name}" == "${target}" → ${match}` });
+      if (match) {
+        steps.push({ lineIndex: 4, variables: {}, output: 'Found!' });
+        steps.push({ lineIndex: 5, variables: {}, output: null, flowArrow: 'break' });
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      steps.push({ lineIndex: 6, variables: {}, output: `"${target}" was not found.` });
+    }
+    return { code, steps };
+  }
+
+  function buildSearchWidget(target) {
+    const { code, steps } = buildSearchSteps(target);
+    const container = document.getElementById('srch-st');
+    if (srchSt) {
+      srchSt.reconfigure({ code, steps });
+    } else {
+      srchSt = new StepThrough(container, { code, steps, showFlowArrows: true });
+    }
+  }
+
+  buildSearchWidget('Charlie');
+
+  document.getElementById('search-rebuild').addEventListener('click', () => {
+    const target = document.getElementById('search-target').value;
+    buildSearchWidget(target);
+  });
+
+  // ══════════════════════════════════════
+  // Tab 3 — Filter
+  // ══════════════════════════════════════
+  const FILTER_NUMS = [12, 5, 8, 3, 17, 6];
+
+  function updateFilter() {
+    const threshold = parseInt(document.getElementById('filt-threshold').value);
+    document.getElementById('filt-val').textContent = threshold;
+
+    const code = `numbers = [12, 5, 8, 3, 17, 6]\nfor num in numbers:\n    if num >= ${threshold}:\n        print(num)`;
+    document.getElementById('filt-code-wrap').innerHTML = highlightPython(code);
+
+    const filtered = FILTER_NUMS.filter(n => n >= threshold);
+    document.getElementById('filt-output').textContent =
+      filtered.length ? filtered.join('\n') : '(nothing matches)';
+  }
+
+  document.getElementById('filt-threshold').addEventListener('input', updateFilter);
+  updateFilter();
+
+  // ══════════════════════════════════════
+  // Tab 4 — Input Validation
+  // ══════════════════════════════════════
+  const CORRECT_PW = 'secret';
+  let pwAttempts = 0;
+  const pwLog = document.getElementById('pw-log');
+  const pwInput = document.getElementById('pw-input');
+  const pwSubmit = document.getElementById('pw-submit');
+
+  function addLog(text, cls) {
+    const line = document.createElement('div');
+    line.textContent = text;
+    if (cls) line.style.color = cls;
+    pwLog.appendChild(line);
+    pwLog.scrollTop = pwLog.scrollHeight;
+  }
+
+  function submitPassword() {
+    const pw = pwInput.value;
+    if (!pw) return;
+    pwAttempts++;
+
+    addLog(`>>> input("Enter password: ")`, '#64748b');
+    addLog(`  You typed: "${pw}"`, '#94a3b8');
+
+    if (pw !== CORRECT_PW) {
+      addLog(`  password != "secret" → True — loop continues`, '#fdba74');
+      addLog(`  "Try again!"`, '#ef4444');
+    } else {
+      addLog(`  password != "secret" → False — loop exits`, '#86efac');
+      addLog(`  "Access granted!"`, '#4ade80');
+      pwSubmit.disabled = true;
+      pwInput.disabled = true;
+    }
+    pwInput.value = '';
+    pwInput.focus();
+  }
+
+  pwSubmit.addEventListener('click', submitPassword);
+  pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitPassword(); });
+})();
+</script>
+</body>
+</html>

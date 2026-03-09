@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="page" content="3">
+  <title>Page 3 — Infinite Loops &amp; Conditions | Python Loops</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="page-wrapper">
+  <header class="page-header">
+    <span class="phase-badge">Phase: Foundations</span>
+    <h1>Infinite Loops &amp; Conditions</h1>
+    <p class="subtitle">When loops never stop</p>
+  </header>
+
+  <div class="concept-box">
+    If the condition in a <code>while</code> loop never becomes <code>False</code>, the loop runs forever.
+    This is called an <strong>infinite loop</strong>. It's the most common beginner mistake with while loops
+    — and it's always caused by the condition.
+  </div>
+
+  <!-- Widget: Fix the Loop -->
+  <div class="card">
+    <div class="card-title">Widget — Fix the Loop</div>
+    <p class="text-muted text-sm mb-2">Three buggy loops. For each: predict → check → fix.</p>
+
+    <!-- Bug 1 -->
+    <div class="bug-card" id="bug1">
+      <h4 style="margin-bottom:0.75rem;">Bug 1 — Missing increment</h4>
+      <pre><code id="bug1-code">count = 0
+while count &lt; 5:
+    print(count)
+    # count never changes!</code></pre>
+      <p class="mt-2 mb-1"><strong>Will this loop stop?</strong></p>
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+        <button class="btn btn-ghost btn-sm" onclick="checkBug(1,'yes')">Yes</button>
+        <button class="btn btn-ghost btn-sm" onclick="checkBug(1,'no')">No</button>
+      </div>
+      <div id="bug1-feedback" class="hidden"></div>
+      <div id="bug1-fix-area" class="hidden">
+        <p class="mt-2 mb-1 text-sm"><strong>Fix it:</strong> Add the missing line. Type the line that should go on line 4:</p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+          <input class="fix-input" id="bug1-input" type="text" placeholder="count = ..." style="max-width:260px;">
+          <button class="btn btn-primary btn-sm" onclick="testFix(1)">Test Fix</button>
+        </div>
+        <div id="bug1-fix-result" class="mt-1 hidden"></div>
+        <div id="bug1-st" class="mt-2"></div>
+      </div>
+    </div>
+
+    <!-- Bug 2 -->
+    <div class="bug-card" id="bug2" style="opacity:0.45;pointer-events:none;transition:opacity 0.3s;">
+      <h4 style="margin-bottom:0.75rem;">Bug 2 — Wrong comparison (skips target)</h4>
+      <pre><code id="bug2-code">count = 1
+while count != 5:
+    print(count)
+    count = count + 2</code></pre>
+      <p class="text-sm text-muted" style="margin:0.5rem 0 0.75rem;">count goes 1, 3, 5... wait, it jumps over 5!</p>
+      <p class="mb-1"><strong>Will this loop stop?</strong></p>
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+        <button class="btn btn-ghost btn-sm" onclick="checkBug(2,'yes')">Yes</button>
+        <button class="btn btn-ghost btn-sm" onclick="checkBug(2,'no')">No</button>
+      </div>
+      <div id="bug2-feedback" class="hidden"></div>
+      <div id="bug2-fix-area" class="hidden">
+        <p class="mt-2 mb-1 text-sm"><strong>Fix it:</strong> Change the condition on line 2 (type the whole while line):</p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+          <input class="fix-input" id="bug2-input" type="text" placeholder="while count ..." style="max-width:300px;">
+          <button class="btn btn-primary btn-sm" onclick="testFix(2)">Test Fix</button>
+        </div>
+        <div id="bug2-fix-result" class="mt-1 hidden"></div>
+        <div id="bug2-st" class="mt-2"></div>
+      </div>
+    </div>
+
+    <!-- Bug 3 -->
+    <div class="bug-card" id="bug3" style="opacity:0.45;pointer-events:none;transition:opacity 0.3s;">
+      <h4 style="margin-bottom:0.75rem;">Bug 3 — Wrong direction</h4>
+      <pre><code id="bug3-code">count = 10
+while count &gt; 0:
+    print(count)
+    count = count + 1</code></pre>
+      <p class="text-sm text-muted" style="margin:0.5rem 0 0.75rem;">count starts at 10 and keeps going up. It never reaches 0!</p>
+      <p class="mb-1"><strong>Will this loop stop?</strong></p>
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+        <button class="btn btn-ghost btn-sm" onclick="checkBug(3,'yes')">Yes</button>
+        <button class="btn btn-ghost btn-sm" onclick="checkBug(3,'no')">No</button>
+      </div>
+      <div id="bug3-feedback" class="hidden"></div>
+      <div id="bug3-fix-area" class="hidden">
+        <p class="mt-2 mb-1 text-sm"><strong>Fix it:</strong> Change the update on line 4 (type the corrected line):</p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+          <input class="fix-input" id="bug3-input" type="text" placeholder="count = ..." style="max-width:280px;">
+          <button class="btn btn-primary btn-sm" onclick="testFix(3)">Test Fix</button>
+        </div>
+        <div id="bug3-fix-result" class="mt-1 hidden"></div>
+        <div id="bug3-st" class="mt-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Explanatory text -->
+  <div class="card">
+    <h3 class="mb-1">The rule of thumb</h3>
+    <p><code>while</code> loops require you to manage the variable yourself. Before you run any while loop, ask:</p>
+    <ol style="padding-left:1.5rem;margin-bottom:1rem;">
+      <li style="margin-bottom:0.4rem;">Is the variable used in the condition being <strong>changed</strong> inside the loop?</li>
+      <li style="margin-bottom:0.4rem;">Is it changing in the <strong>right direction</strong> (towards False)?</li>
+      <li>Will it <strong>actually reach</strong> the stopping value, or jump past it?</li>
+    </ol>
+    <p>If all three answers are yes, your loop will terminate correctly.</p>
+  </div>
+
+  <div class="next-teaser">
+    <strong>Next up:</strong> Managing your own counter is powerful — but what if Python could do it for you?
+  </div>
+</div>
+
+<script src="js/syntax-highlight.js"></script>
+<script src="js/step-through.js"></script>
+<script src="js/nav.js"></script>
+<script>
+(function() {
+  // Highlight code blocks
+  ['bug1-code','bug2-code','bug3-code'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = highlightPython(el.textContent);
+  });
+
+  // Track state
+  const state = { 1: false, 2: false, 3: false };
+  const stInstances = {};
+
+  window.checkBug = function(n, answer) {
+    const correct = 'no'; // all three are infinite
+    const feedbackEl = document.getElementById(`bug${n}-feedback`);
+    const fixArea = document.getElementById(`bug${n}-fix-area`);
+
+    feedbackEl.classList.remove('hidden');
+    if (answer === correct) {
+      feedbackEl.innerHTML = `<span class="badge badge-success">Correct!</span> <span class="text-sm">This loop is infinite — the condition never becomes False.</span>`;
+      fixArea.classList.remove('hidden');
+    } else {
+      feedbackEl.innerHTML = `<span class="badge badge-error">Not quite.</span> <span class="text-sm">Actually, this loop runs forever! Can you see why?</span>`;
+      fixArea.classList.remove('hidden');
+    }
+  };
+
+  window.testFix = function(n) {
+    const input = document.getElementById(`bug${n}-input`).value.trim();
+    const resultEl = document.getElementById(`bug${n}-fix-result`);
+    resultEl.classList.remove('hidden');
+
+    let steps = null;
+    let code = null;
+    let valid = false;
+
+    if (n === 1) {
+      // Expect something like "count = count + 1" or "count += 1"
+      valid = /count\s*[+\-]=\s*1|count\s*=\s*count\s*\+\s*1/.test(input);
+      code = ['count = 0', 'while count < 5:', '    print(count)', '    ' + (valid ? 'count = count + 1' : input)];
+      if (valid) {
+        steps = buildCountSteps(0, 5, 1);
+        resultEl.innerHTML = `<span class="badge badge-success">Great fix!</span> <span class="text-sm">Adding <code>count = count + 1</code> makes the condition eventually reach False.</span>`;
+      } else {
+        resultEl.innerHTML = `<span class="badge badge-warn">Hmm.</span> <span class="text-sm">Try: <code>count = count + 1</code></span>`;
+      }
+    } else if (n === 2) {
+      // Expect while count < 5: or while count <= 4:
+      valid = /while\s+count\s*[<>]=?\s*\d+/.test(input) && !/!=/.test(input);
+      code = ['count = 1', input || 'while count < 5:', '    print(count)', '    count = count + 2'];
+      if (valid) {
+        // build custom steps for count 1,3 (< 5 with step 2)
+        steps = [];
+        steps.push({ lineIndex: 0, variables: { count: 1 }, output: null, conditionBadge: null });
+        let c = 1;
+        while (c < 5 && steps.length < 20) {
+          steps.push({ lineIndex: 1, variables: {}, output: null, conditionBadge: `${c} < 5 → True` });
+          steps.push({ lineIndex: 2, variables: {}, output: String(c), conditionBadge: null });
+          c += 2;
+          steps.push({ lineIndex: 3, variables: { count: c }, output: null, conditionBadge: null });
+        }
+        steps.push({ lineIndex: 1, variables: {}, output: null, conditionBadge: `${c} < 5 → False` });
+        resultEl.innerHTML = `<span class="badge badge-success">That works!</span> <span class="text-sm">Using <code>&lt; 5</code> stops the loop before we jump past 5.</span>`;
+      } else {
+        resultEl.innerHTML = `<span class="badge badge-warn">Hmm.</span> <span class="text-sm">Try: <code>while count &lt; 5:</code></span>`;
+      }
+    } else if (n === 3) {
+      valid = /count\s*[=-]\s*count\s*-\s*1|count\s*-=\s*1/.test(input);
+      code = ['count = 10', 'while count > 0:', '    print(count)', '    ' + (valid ? 'count = count - 1' : input)];
+      if (valid) {
+        steps = [];
+        steps.push({ lineIndex: 0, variables: { count: 10 }, output: null, conditionBadge: null });
+        let c = 10;
+        while (c > 0 && steps.length < 40) {
+          steps.push({ lineIndex: 1, variables: {}, output: null, conditionBadge: `${c} > 0 → True` });
+          steps.push({ lineIndex: 2, variables: {}, output: String(c), conditionBadge: null });
+          c--;
+          steps.push({ lineIndex: 3, variables: { count: c }, output: null, conditionBadge: null });
+        }
+        steps.push({ lineIndex: 1, variables: {}, output: null, conditionBadge: `${c} > 0 → False` });
+        resultEl.innerHTML = `<span class="badge badge-success">Correct!</span> <span class="text-sm">Subtracting 1 each time counts downward toward 0.</span>`;
+      } else {
+        resultEl.innerHTML = `<span class="badge badge-warn">Hmm.</span> <span class="text-sm">Try: <code>count = count - 1</code></span>`;
+      }
+    }
+
+    if (valid && steps && code) {
+      const stEl = document.getElementById(`bug${n}-st`);
+      if (stInstances[n]) {
+        stInstances[n].reconfigure({ code, steps });
+      } else {
+        stInstances[n] = new StepThrough(stEl, { code, steps, showFlowArrows: false });
+      }
+      // Mark card solved
+      document.getElementById(`bug${n}`).classList.add('solved');
+      state[n] = true;
+      // Unlock next bug
+      if (n < 3) {
+        const next = document.getElementById(`bug${n+1}`);
+        next.style.opacity = '1';
+        next.style.pointerEvents = 'auto';
+      }
+    }
+  };
+
+  function buildCountSteps(start, stop, step) {
+    const steps = [];
+    steps.push({ lineIndex: 0, variables: { count: start }, output: null, conditionBadge: null });
+    let c = start;
+    while (c < stop && steps.length < 60) {
+      steps.push({ lineIndex: 1, variables: {}, output: null, conditionBadge: `${c} < ${stop} → True` });
+      steps.push({ lineIndex: 2, variables: {}, output: String(c), conditionBadge: null });
+      c += step;
+      steps.push({ lineIndex: 3, variables: { count: c }, output: null, conditionBadge: null });
+    }
+    steps.push({ lineIndex: 1, variables: {}, output: null, conditionBadge: `${c} < ${stop} → False` });
+    return steps;
+  }
+})();
+</script>
+</body>
+</html>

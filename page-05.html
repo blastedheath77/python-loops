@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="page" content="5">
+  <title>Page 5 — range() Unpacked | Python Loops</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="page-wrapper">
+  <header class="page-header">
+    <span class="phase-badge">Phase: Core Concepts</span>
+    <h1>range() Unpacked</h1>
+    <p class="subtitle">Controlling your counting</p>
+  </header>
+
+  <div class="concept-box">
+    <code>range()</code> can take 1, 2, or 3 arguments:
+    <code>range(stop)</code>, <code>range(start, stop)</code>, or <code>range(start, stop, step)</code>.
+    This gives you precise control over which numbers the loop visits.
+  </div>
+
+  <!-- Widget: Range Explorer -->
+  <div class="card">
+    <div class="card-title">Widget — Range Explorer</div>
+
+    <!-- Preset buttons -->
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.25rem;">
+      <button class="btn btn-ghost btn-sm" onclick="setPreset(0,10,1)">Count to 10</button>
+      <button class="btn btn-ghost btn-sm" onclick="setPreset(0,10,2)">Even numbers</button>
+      <button class="btn btn-ghost btn-sm" onclick="setPreset(10,0,-1)">Countdown</button>
+      <button class="btn btn-ghost btn-sm" onclick="setPreset(0,15,3)">Count by 3s</button>
+    </div>
+
+    <!-- Sliders -->
+    <div class="range-slider-group">
+      <div class="range-row">
+        <label for="sl-start">start</label>
+        <input type="range" id="sl-start" min="-10" max="20" value="0" step="1">
+        <span class="range-val" id="val-start">0</span>
+      </div>
+      <div class="range-row">
+        <label for="sl-stop">stop</label>
+        <input type="range" id="sl-stop" min="-10" max="20" value="5" step="1">
+        <span class="range-val" id="val-stop">5</span>
+      </div>
+      <div class="range-row">
+        <label for="sl-step">step</label>
+        <input type="range" id="sl-step" min="-5" max="5" value="1" step="1">
+        <span class="range-val" id="val-step">1</span>
+      </div>
+    </div>
+
+    <!-- Live outputs -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;" id="range-outputs">
+      <div>
+        <div class="var-watch-title mb-1">Code Preview</div>
+        <div class="code-block" id="code-preview" style="font-size:0.95rem;padding:0.85rem 1rem;"></div>
+
+        <div class="var-watch-title mt-2 mb-1">List Output</div>
+        <div class="code-block" id="list-output" style="font-size:0.9rem;padding:0.7rem 1rem;min-height:2.5rem;"></div>
+
+        <div id="empty-msg" class="hidden mt-1">
+          <span class="badge badge-warn">Empty range — no numbers!</span>
+        </div>
+      </div>
+      <div>
+        <div class="var-watch-title mb-1">Number Line</div>
+        <div id="number-line-wrap" style="overflow-x:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Explanatory text -->
+  <div class="card">
+    <h3 class="mb-1">All three forms</h3>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;">
+      <div>
+        <code>range(stop)</code>
+        <span class="text-sm text-muted" style="margin-left:0.5rem;">→ 0, 1, 2, … stop−1</span>
+        <br><span class="text-sm">Example: <code>range(5)</code> → 0, 1, 2, 3, 4</span>
+      </div>
+      <div>
+        <code>range(start, stop)</code>
+        <span class="text-sm text-muted" style="margin-left:0.5rem;">→ start, start+1, … stop−1</span>
+        <br><span class="text-sm">Example: <code>range(2, 7)</code> → 2, 3, 4, 5, 6</span>
+      </div>
+      <div>
+        <code>range(start, stop, step)</code>
+        <span class="text-sm text-muted" style="margin-left:0.5rem;">→ start, start+step, … &lt; stop</span>
+        <br><span class="text-sm">Example: <code>range(0, 10, 2)</code> → 0, 2, 4, 6, 8</span>
+      </div>
+    </div>
+    <div class="concept-box" style="border-color:var(--color-secondary);background:rgba(234,88,12,0.05);">
+      <strong>Common gotcha:</strong> <code>stop</code> is <em>exclusive</em> — the last value in the range is <code>stop - 1</code> (for positive step).
+      So <code>range(1, 6)</code> gives 1, 2, 3, 4, 5 — not 6.
+    </div>
+  </div>
+
+  <div class="next-teaser">
+    <strong>Next up:</strong> Numbers are great — but loops can walk through much more than numbers.
+  </div>
+</div>
+
+<script src="js/syntax-highlight.js"></script>
+<script src="js/nav.js"></script>
+<script>
+(function() {
+  const NL_MIN = -10, NL_MAX = 20;
+  const DOT_TOTAL = NL_MAX - NL_MIN + 1; // 31 dots
+
+  const slStart = document.getElementById('sl-start');
+  const slStop  = document.getElementById('sl-stop');
+  const slStep  = document.getElementById('sl-step');
+  const valStart = document.getElementById('val-start');
+  const valStop  = document.getElementById('val-stop');
+  const valStep  = document.getElementById('val-step');
+
+  // Skip 0 for step slider
+  slStep.addEventListener('input', () => {
+    if (slStep.value === '0') slStep.value = slStep.dataset.prev > 0 ? '-1' : '1';
+    slStep.dataset.prev = slStep.value;
+  });
+  slStep.dataset.prev = '1';
+
+  [slStart, slStop, slStep].forEach(sl => sl.addEventListener('input', update));
+
+  function getVals() {
+    return {
+      start: parseInt(slStart.value, 10),
+      stop:  parseInt(slStop.value, 10),
+      step:  parseInt(slStep.value, 10) || 1
+    };
+  }
+
+  function buildRange(start, stop, step) {
+    const nums = [];
+    if (step > 0) {
+      for (let n = start; n < stop && nums.length <= 50; n += step) nums.push(n);
+    } else {
+      for (let n = start; n > stop && nums.length <= 50; n += step) nums.push(n);
+    }
+    return nums;
+  }
+
+  function codePreview(start, stop, step) {
+    let call;
+    if (start === 0 && step === 1) call = `range(${stop})`;
+    else if (step === 1) call = `range(${start}, ${stop})`;
+    else call = `range(${start}, ${stop}, ${step})`;
+    return `for i in ${call}:\n    print(i)`;
+  }
+
+  function update() {
+    const { start, stop, step } = getVals();
+    valStart.textContent = start;
+    valStop.textContent  = stop;
+    valStep.textContent  = step;
+
+    const nums = buildRange(start, stop, step);
+    const isEmpty = nums.length === 0;
+
+    // Code preview
+    document.getElementById('code-preview').innerHTML =
+      highlightPython(codePreview(start, stop, step));
+
+    // List output
+    const listEl = document.getElementById('list-output');
+    const emptyMsg = document.getElementById('empty-msg');
+    if (isEmpty) {
+      listEl.textContent = '[]';
+      emptyMsg.classList.remove('hidden');
+    } else {
+      const display = nums.length > 20
+        ? '[' + nums.slice(0,20).join(', ') + ', ...]'
+        : '[' + nums.join(', ') + ']';
+      listEl.innerHTML = highlightPython(display);
+      emptyMsg.classList.add('hidden');
+    }
+
+    // Number line
+    renderNumberLine(nums);
+  }
+
+  function renderNumberLine(included) {
+    const wrap = document.getElementById('number-line-wrap');
+    wrap.innerHTML = '';
+
+    const container = document.createElement('div');
+    container.style.cssText = 'position:relative;height:60px;min-width:280px;margin:0.5rem 0;';
+
+    // Track
+    const track = document.createElement('div');
+    track.className = 'nl-track';
+    container.appendChild(track);
+
+    const includedSet = new Set(included);
+    const step = 100 / (DOT_TOTAL - 1);
+
+    for (let i = 0; i < DOT_TOTAL; i++) {
+      const n = NL_MIN + i;
+      const pct = i * step;
+
+      const dot = document.createElement('div');
+      dot.className = `nl-dot ${includedSet.has(n) ? 'included' : 'excluded'}`;
+      dot.style.left = pct + '%';
+      container.appendChild(dot);
+
+      // Labels at -10, -5, 0, 5, 10, 15, 20
+      if (n % 5 === 0) {
+        const lbl = document.createElement('div');
+        lbl.className = 'nl-label';
+        lbl.style.left = pct + '%';
+        lbl.textContent = n;
+        container.appendChild(lbl);
+      }
+    }
+
+    wrap.appendChild(container);
+  }
+
+  window.setPreset = function(start, stop, step) {
+    slStart.value = start;
+    slStop.value  = stop;
+    slStep.value  = step;
+    slStep.dataset.prev = step;
+    update();
+  };
+
+  update();
+})();
+</script>
+</body>
+</html>
