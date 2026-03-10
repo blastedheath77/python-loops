@@ -24,7 +24,7 @@
 
   <!-- Widget: Side-by-Side Comparison -->
   <div class="card">
-    <div class="card-title">Widget — While vs For, Side-by-Side</div>
+    <div class="card-title">While vs For, Side-by-Side</div>
     <div class="grid-2" id="both-panels">
       <!-- While panel -->
       <div>
@@ -35,7 +35,7 @@
           <table class="var-table" id="while-vars"></table>
         </div>
         <div class="var-watch-title mt-1" style="margin-bottom:0.3rem;">Output</div>
-        <div class="console-output" id="while-output" style="min-height:60px;"></div>
+        <div class="console-output" id="while-output" style="height:100px;"></div>
       </div>
       <!-- For panel -->
       <div>
@@ -46,7 +46,7 @@
           <table class="var-table" id="for-vars"></table>
         </div>
         <div class="var-watch-title mt-1" style="margin-bottom:0.3rem;">Output</div>
-        <div class="console-output" id="for-output" style="min-height:60px;"></div>
+        <div class="console-output" id="for-output" style="height:100px;"></div>
       </div>
     </div>
 
@@ -63,14 +63,14 @@
           <div class="badge badge-warn mb-1">Manual management</div>
           <ul class="text-sm" style="padding-left:1.25rem;color:#64748b;">
             <li><code>i = 0</code> — create the counter</li>
-            <li><code>while i &lt; 5:</code> — write the condition</li>
+            <li><code>while i &lt; 3:</code> — write the condition</li>
             <li><code>i = i + 1</code> — update the counter</li>
           </ul>
         </div>
         <div>
           <div class="badge badge-success mb-1">Automatic ✓</div>
           <ul class="text-sm" style="padding-left:1.25rem;color:#64748b;">
-            <li><code>for i in range(5):</code> handles all three</li>
+            <li><code>for i in range(3):</code> handles all three</li>
             <li>Python creates, checks, and updates <code>i</code></li>
             <li>You just say what sequence to step through</li>
           </ul>
@@ -84,7 +84,7 @@
     <h3 class="mb-1">The <code>for</code> loop syntax</h3>
     <pre style="margin-bottom:1rem;"><code id="for-syntax">for variable in sequence:
     # body runs for each value</code></pre>
-    <p><code>range(5)</code> produces the sequence <code>[0, 1, 2, 3, 4]</code>. On each iteration, <code>i</code> takes the next value.</p>
+    <p><code>range(3)</code> produces the sequence <code>[0, 1, 2]</code>. On each iteration, <code>i</code> takes the next value.</p>
     <p>The <code>for</code> loop is the right choice whenever you have a <em>known sequence</em> to walk through — numbers, list items, characters in a string, and much more.</p>
   </div>
 
@@ -104,12 +104,12 @@
   // ── Code definitions ──
   const whileCode = [
     'i = 0',
-    'while i < 5:',
+    'while i < 3:',
     '    print(i)',
     '    i = i + 1'
   ];
   const forCode = [
-    'for i in range(5):',
+    'for i in range(3):',
     '    print(i)'
   ];
 
@@ -117,16 +117,16 @@
   // While trace
   const whileSteps = [];
   whileSteps.push({ lineIndex: 0, vars: { i: 0 }, out: null, badge: null });
-  for (let c = 0; c < 5; c++) {
-    whileSteps.push({ lineIndex: 1, vars: {}, out: null, badge: `${c} < 5 → True` });
+  for (let c = 0; c < 3; c++) {
+    whileSteps.push({ lineIndex: 1, vars: {}, out: null, badge: `${c} < 3 → True` });
     whileSteps.push({ lineIndex: 2, vars: {}, out: String(c), badge: null });
     whileSteps.push({ lineIndex: 3, vars: { i: c + 1 }, out: null, badge: null });
   }
-  whileSteps.push({ lineIndex: 1, vars: {}, out: null, badge: '5 < 5 → False' });
+  whileSteps.push({ lineIndex: 1, vars: {}, out: null, badge: '3 < 3 → False' });
 
   // For trace
   const forSteps = [];
-  for (let c = 0; c < 5; c++) {
+  for (let c = 0; c < 3; c++) {
     forSteps.push({ lineIndex: 0, vars: { i: c }, out: null, badge: null });
     forSteps.push({ lineIndex: 1, vars: {}, out: String(c), badge: null });
   }
@@ -142,7 +142,7 @@
     codeLines.forEach((line, idx) => {
       const row = document.createElement('div');
       row.className = 'st-code-line';
-      row.innerHTML = `<span class="st-line-num">${idx+1}</span><span>${highlightPython(line)}</span><span class="condition-badge-slot"></span>`;
+      row.innerHTML = `<span class="st-line-num">${idx+1}</span><span class="st-code-text">${highlightPython(line)}</span><span class="condition-badge-slot"></span>`;
       panelEl.appendChild(row);
       els.push(row);
     });

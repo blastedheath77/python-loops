@@ -24,7 +24,7 @@
 
   <!-- Widget: Flow Control Visualiser -->
   <div class="card">
-    <div class="card-title">Widget — Flow Control Visualiser</div>
+    <div class="card-title">Flow Control Visualiser</div>
     <div id="flow-st"></div>
 
     <div id="flow-summary" class="hidden mt-2">
@@ -50,10 +50,10 @@ for num in numbers:
     print(num)</code></pre>
     <p class="mt-2 mb-1"><strong>What will be printed?</strong></p>
     <div class="mc-options" id="mc-options">
-      <button class="mc-btn" onclick="checkAnswer('A')">5<br>3<br>8</button>
-      <button class="mc-btn" onclick="checkAnswer('B')">5<br>3</button>
-      <button class="mc-btn" onclick="checkAnswer('C')">5<br>3<br>2<br>6</button>
-      <button class="mc-btn" onclick="checkAnswer('D')">3<br>5</button>
+      <button class="mc-btn" onclick="checkAnswer('A')"><strong>A.</strong> 5, 3, 8</button>
+      <button class="mc-btn" onclick="checkAnswer('B')"><strong>B.</strong> 5, 3</button>
+      <button class="mc-btn" onclick="checkAnswer('C')"><strong>C.</strong> 5, 3, 2, 6</button>
+      <button class="mc-btn" onclick="checkAnswer('D')"><strong>D.</strong> 3, 5</button>
     </div>
     <div id="quiz-feedback" class="hidden mt-1"></div>
 
@@ -150,29 +150,14 @@ for num in numbers:
   const container = document.getElementById('flow-st');
   const st = new StepThrough(container, { code, steps, showFlowArrows: true });
 
-  // Show summary when animation finishes
-  const origRunAll = st.runAll.bind(st);
-  // Detect completion via run-all — we wrap the reset button to also hide summary
-  // Use a simple approach: watch for last step
-  function checkSummary() {
-    // Show summary after step 16 (last)
-    const info = container.querySelector('.st-controls');
-    // Check if stepBtn is disabled after a short delay
-    setTimeout(() => {
-      const stepBtn = container.querySelector('.btn-primary');
-      if (stepBtn && stepBtn.disabled) {
-        document.getElementById('flow-summary').classList.remove('hidden');
-      }
-    }, 100);
-  }
-
-  // Patch step button
-  const controls = container.querySelector ? null : null;
-  // Use MutationObserver to detect when step button becomes disabled
+  // Show summary when step-through completes (step button becomes disabled)
+  const summaryEl = document.getElementById('flow-summary');
   const obs = new MutationObserver(() => {
     const stepBtn = container.querySelector('.btn-primary');
     if (stepBtn && stepBtn.disabled) {
-      document.getElementById('flow-summary').classList.remove('hidden');
+      summaryEl.classList.remove('hidden');
+    } else {
+      summaryEl.classList.add('hidden');
     }
   });
   obs.observe(container, { subtree: true, attributes: true });

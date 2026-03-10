@@ -23,7 +23,7 @@
 
   <!-- Widget: Loop Sorter -->
   <div class="card">
-    <div class="card-title">Widget — Loop Sorter</div>
+    <div class="card-title">Loop Sorter</div>
     <p class="text-sm text-muted mb-2">Drag each scenario card to the correct loop type. Then click "Check Answers".</p>
 
     <div class="sorter-wrapper">
@@ -177,6 +177,14 @@
     let correct = 0;
     const total = SCENARIOS.length;
     const scoreEl = document.getElementById('score-display');
+    const placedCount = forItems.children.length + whileItems.children.length;
+
+    // Warn if not all cards are placed
+    if (placedCount < total) {
+      scoreEl.classList.remove('hidden');
+      scoreEl.innerHTML = `<span class="badge badge-warn" style="font-size:0.9rem;padding:0.35rem 0.75rem;">Place all ${total} scenarios first! (${total - placedCount} remaining in the pool)</span>`;
+      return;
+    }
 
     // Check cards in drop zones
     [forItems, whileItems].forEach((container, zi) => {

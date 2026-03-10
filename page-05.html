@@ -24,7 +24,7 @@
 
   <!-- Widget: Range Explorer -->
   <div class="card">
-    <div class="card-title">Widget — Range Explorer</div>
+    <div class="card-title">Range Explorer</div>
 
     <!-- Preset buttons -->
     <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.25rem;">
@@ -59,7 +59,10 @@
         <div class="var-watch-title mb-1">Code Preview</div>
         <div class="code-block" id="code-preview" style="font-size:0.95rem;padding:0.85rem 1rem;"></div>
 
-        <div class="var-watch-title mt-2 mb-1">List Output</div>
+        <div style="display:flex;align-items:baseline;gap:0.5rem;margin-top:1rem;margin-bottom:0.25rem;">
+          <span class="var-watch-title" style="margin:0;">List Output</span>
+          <span class="badge badge-info" id="count-badge" style="font-size:0.72rem;">5 numbers</span>
+        </div>
         <div class="code-block" id="list-output" style="font-size:0.9rem;padding:0.7rem 1rem;min-height:2.5rem;"></div>
 
         <div id="empty-msg" class="hidden mt-1">
@@ -169,15 +172,20 @@
     // List output
     const listEl = document.getElementById('list-output');
     const emptyMsg = document.getElementById('empty-msg');
+    const countBadge = document.getElementById('count-badge');
     if (isEmpty) {
       listEl.textContent = '[]';
       emptyMsg.classList.remove('hidden');
+      countBadge.textContent = '0 numbers';
+      countBadge.className = 'badge badge-warn';
     } else {
       const display = nums.length > 20
         ? '[' + nums.slice(0,20).join(', ') + ', ...]'
         : '[' + nums.join(', ') + ']';
       listEl.innerHTML = highlightPython(display);
       emptyMsg.classList.add('hidden');
+      countBadge.textContent = nums.length + (nums.length === 1 ? ' number' : ' numbers');
+      countBadge.className = 'badge badge-info';
     }
 
     // Number line

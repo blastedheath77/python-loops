@@ -21,33 +21,34 @@
     With them, one instruction can do the work of thousands.
   </div>
 
-  <!-- Widget: The Copy-Paste Problem -->
+  <!-- The Copy-Paste Problem -->
   <div class="card">
-    <div class="card-title">Widget — The Copy-Paste Problem</div>
+    <div class="card-title">The Copy-Paste Problem</div>
+    <p class="text-muted text-sm mb-2">Task: Print "Hello World" 50 times.</p>
     <div class="grid-2">
       <!-- Left: Without a loop -->
       <div id="panel-without">
         <h3 style="margin-bottom:0.75rem;">Without a loop</h3>
-        <div id="without-code" class="code-block" style="min-height:3.5rem; margin-bottom:0.75rem;"></div>
+        <div id="without-code" style="background:var(--color-code-bg);color:var(--color-code-text);font-family:var(--font-code);font-size:0.88rem;border-radius:var(--radius);padding:0.75rem 1rem;max-height:220px;overflow-y:auto;line-height:1.7;margin-bottom:0.75rem;"></div>
         <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.75rem;">
           <button class="btn btn-ghost btn-sm" id="add-line-btn">+ Add another line</button>
-          <span class="badge badge-warn" id="line-counter">1 / 50 lines written</span>
+          <span class="badge badge-warn" id="line-counter">1 / 50 lines</span>
         </div>
-        <p id="hint-text" class="text-muted text-sm hidden" style="font-style:italic;">
-          Tired yet? There's a better way&hellip;
+        <p id="hint-text" class="hidden" style="font-style:italic;color:var(--color-secondary);font-weight:500;font-size:0.95rem;">
+          Tired yet? There's a better way &rarr;
         </p>
       </div>
 
       <!-- Right: With a loop -->
-      <div id="panel-with" style="opacity:0.4;pointer-events:none;transition:opacity 0.4s;">
+      <div id="panel-with" style="opacity:0.35;pointer-events:none;filter:grayscale(0.6);transition:all 0.5s ease;">
         <h3 style="margin-bottom:0.75rem;">With a loop</h3>
         <pre><code id="loop-code">for i in range(50):
-    print("Hello")</code></pre>
+    print("Hello World")</code></pre>
         <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin:0.75rem 0;">
           <button class="btn btn-primary btn-sm" id="run-loop-btn">&#9654; Run</button>
-          <span class="badge badge-info">50 lines, 2 lines of code</span>
         </div>
-        <div id="loop-output" class="console-output" style="min-height:120px;"></div>
+        <div id="loop-output" class="console-output" style="min-height:120px;max-height:180px;"></div>
+        <div id="summary-box" class="hidden" style="margin-top:0.75rem;"></div>
       </div>
     </div>
   </div>
@@ -56,7 +57,7 @@
   <div class="card">
     <h3 class="mb-1">Programming is about automating repetition</h3>
     <p>At its core, programming means teaching a computer to do things automatically — especially things that need to happen many times.
-       Imagine asking the computer to print "Hello" 1,000 times. You could type it 1,000 times, or you could write a <strong>loop</strong>.</p>
+       Imagine asking the computer to print "Hello World" 1,000 times. You could type it 1,000 times, or you could write a <strong>loop</strong>.</p>
     <p>Python gives you two main types of loops:</p>
     <ul style="padding-left:1.5rem;margin-bottom:1rem;">
       <li style="margin-bottom:0.4rem;"><strong><code>while</code></strong> — repeats <em>while</em> a condition is true. You decide what makes it stop.</li>
@@ -75,69 +76,91 @@
 <script>
 (function() {
   // ── Without-a-loop panel ──
-  const withoutCode = document.getElementById('without-code');
-  const addLineBtn  = document.getElementById('add-line-btn');
-  const lineCounter = document.getElementById('line-counter');
-  const hintText    = document.getElementById('hint-text');
-  const panelWith   = document.getElementById('panel-with');
+  var withoutCode = document.getElementById('without-code');
+  var addLineBtn  = document.getElementById('add-line-btn');
+  var lineCounter = document.getElementById('line-counter');
+  var hintText    = document.getElementById('hint-text');
+  var panelWith   = document.getElementById('panel-with');
 
-  let lineCount = 1;
-  const MAX_LINES = 50;
+  var lineCount = 1;
+  var MAX_LINES = 50;
+  var highlightedLine = highlightPython('print("Hello World")');
 
   function renderWithoutCode() {
-    let html = '';
-    for (let i = 0; i < lineCount; i++) {
-      html += highlightPython('print("Hello")') + '\n';
+    var html = '<table style="border-collapse:collapse;width:100%;">';
+    for (var i = 1; i <= lineCount; i++) {
+      html += '<tr><td style="color:#475569;text-align:right;padding-right:0.8rem;user-select:none;width:2rem;vertical-align:top;font-size:0.78rem;opacity:0.6;">' + i + '</td>';
+      html += '<td>' + highlightedLine + '</td></tr>';
     }
+    html += '</table>';
     withoutCode.innerHTML = html;
-    lineCounter.textContent = `${lineCount} / ${MAX_LINES} lines written`;
+    lineCounter.textContent = lineCount + ' / ' + MAX_LINES + ' lines';
+
+    // Auto-scroll to bottom
+    withoutCode.scrollTop = withoutCode.scrollHeight;
   }
 
   renderWithoutCode();
 
-  addLineBtn.addEventListener('click', () => {
+  addLineBtn.addEventListener('click', function() {
     if (lineCount >= MAX_LINES) return;
     lineCount++;
     renderWithoutCode();
-    // Show hint after 5 clicks
-    if (lineCount >= 5) {
+
+    // After 5 clicks: show hint and unlock right panel
+    if (lineCount === 6) {
       hintText.classList.remove('hidden');
-      // Unlock right panel
       panelWith.style.opacity = '1';
       panelWith.style.pointerEvents = 'auto';
+      panelWith.style.filter = 'none';
     }
+
     if (lineCount >= MAX_LINES) {
       addLineBtn.disabled = true;
-      addLineBtn.textContent = '50 lines — full!';
+      addLineBtn.textContent = '50 lines — done!';
     }
   });
 
   // ── With-a-loop panel ──
-  const runLoopBtn   = document.getElementById('run-loop-btn');
-  const loopOutput   = document.getElementById('loop-output');
-  let animRunning = false;
+  var runLoopBtn  = document.getElementById('run-loop-btn');
+  var loopOutput  = document.getElementById('loop-output');
+  var summaryBox  = document.getElementById('summary-box');
+  var animRunning = false;
 
   // Highlight the for-loop code
-  const loopCodeEl = document.getElementById('loop-code');
+  var loopCodeEl = document.getElementById('loop-code');
   loopCodeEl.innerHTML = highlightPython(loopCodeEl.textContent);
 
-  runLoopBtn.addEventListener('click', () => {
+  runLoopBtn.addEventListener('click', function() {
     if (animRunning) return;
     animRunning = true;
     loopOutput.textContent = '';
+    summaryBox.classList.add('hidden');
     runLoopBtn.disabled = true;
-    let i = 0;
-    const DELAY = 40;
+
+    var i = 0;
+    var startTime = performance.now();
+
     function step() {
       if (i >= 50) {
         animRunning = false;
         runLoopBtn.disabled = false;
+
+        // Show contrast summary
+        var elapsed = ((performance.now() - startTime) / 1000).toFixed(1);
+        summaryBox.innerHTML =
+          '<div style="background:rgba(22,163,74,0.08);border:1px solid var(--color-success);border-radius:8px;padding:0.75rem 1rem;font-size:0.9rem;">' +
+          '<strong style="color:var(--color-success);">Done!</strong> ' +
+          '50 lines of output from <strong>2 lines of code</strong> in ' + elapsed + 's.' +
+          (lineCount > 1 ? ' <span class="text-muted">You wrote ' + lineCount + ' lines by hand.</span>' : '') +
+          '</div>';
+        summaryBox.classList.remove('hidden');
         return;
       }
-      loopOutput.textContent += 'Hello\n';
+      loopOutput.textContent += 'Hello World\n';
       loopOutput.scrollTop = loopOutput.scrollHeight;
       i++;
-      setTimeout(step, DELAY);
+      setTimeout(step, 35);
     }
     step();
   });

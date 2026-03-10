@@ -23,7 +23,7 @@
 
   <!-- Pattern Lab -->
   <div class="card">
-    <div class="card-title">Widget — Pattern Lab</div>
+    <div class="card-title">Pattern Lab</div>
 
     <div class="tab-bar">
       <button class="tab-btn active" id="tab-acc"  onclick="switchTab('acc')">Accumulator</button>
@@ -59,7 +59,7 @@
           <option value="Diana">Diana</option>
           <option value="Eve">Eve (not in list)</option>
         </select>
-        <button class="btn btn-primary btn-sm" id="search-rebuild">Rebuild &amp; Run</button>
+        <button class="btn btn-primary btn-sm" id="search-rebuild">Rebuild</button>
       </div>
       <div id="srch-st"></div>
     </div>
@@ -74,7 +74,7 @@
       </div>
       <div id="filt-code-wrap" class="code-block" style="margin-bottom:1rem;"></div>
       <div class="var-watch-title mb-1">Filtered output:</div>
-      <div class="console-output" id="filt-output" style="min-height:60px;"></div>
+      <div class="console-output" id="filt-output" style="height:80px;overflow-y:auto;"></div>
     </div>
 
     <!-- ── Tab 4: Input Validation ── -->
@@ -87,9 +87,10 @@ print("Access granted!")</code></pre>
       <div class="pw-prompt mb-1">
         <input class="input-field" id="pw-input" type="text" placeholder='Type a password…' style="max-width:240px;">
         <button class="btn btn-primary btn-sm" id="pw-submit">Submit</button>
+        <button class="btn btn-ghost btn-sm" id="pw-reset">Reset</button>
       </div>
       <p class="text-sm text-muted mb-1">Hint: the correct password is <code>secret</code></p>
-      <div class="pw-log" id="pw-log"></div>
+      <div class="pw-log" id="pw-log" style="max-height:160px;overflow-y:auto;"></div>
     </div>
   </div>
 
@@ -362,6 +363,15 @@ print("Access granted!")</code></pre>
 
   pwSubmit.addEventListener('click', submitPassword);
   pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitPassword(); });
+
+  document.getElementById('pw-reset').addEventListener('click', () => {
+    pwAttempts = 0;
+    pwLog.innerHTML = '';
+    pwSubmit.disabled = false;
+    pwInput.disabled = false;
+    pwInput.value = '';
+    pwInput.focus();
+  });
 })();
 </script>
 </body>

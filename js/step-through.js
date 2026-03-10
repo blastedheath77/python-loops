@@ -75,7 +75,7 @@
       conTitle.textContent = 'Console Output';
       this._consoleEl = document.createElement('div');
       this._consoleEl.className = 'console-output';
-      this._consoleEl.style.minHeight = '80px';
+      this._consoleEl.style.height = '120px';
       conWrap.appendChild(conTitle);
       conWrap.appendChild(this._consoleEl);
       right.appendChild(conWrap);
