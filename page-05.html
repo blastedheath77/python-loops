@@ -109,6 +109,38 @@
 
 <script src="js/syntax-highlight.js"></script>
 <script src="js/nav.js"></script>
+<script type="module">
+import { logEvent, ensureSessionStart } from './js/logger.js';
+const PAGE = 5;
+ensureSessionStart();
+const _pageStart = Date.now();
+
+logEvent('page_view', { page: PAGE, totalPages: 10 });
+
+window.addEventListener('beforeunload', () => {
+  logEvent('time_on_page', { page: PAGE, seconds: Math.round((Date.now() - _pageStart) / 1000) });
+});
+
+// Preset buttons (delegated — they use onclick so we delegate from parent)
+document.querySelectorAll('.btn-ghost[onclick^="setPreset"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    logEvent('widget_interaction', { widget: 'range_preset', page: PAGE, preset: btn.textContent.trim() });
+  });
+});
+
+// Sliders — debounced to avoid flooding on drag
+let _sliderTimer;
+['slStart', 'slStop', 'slStep'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', () => {
+    clearTimeout(_sliderTimer);
+    _sliderTimer = setTimeout(() => {
+      logEvent('widget_interaction', { widget: 'range_slider', page: PAGE, slider: id });
+    }, 600);
+  });
+});
+</script>
 <script>
 (function() {
   const NL_MIN = -10, NL_MAX = 20;

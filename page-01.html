@@ -73,6 +73,28 @@
 
 <script src="js/syntax-highlight.js"></script>
 <script src="js/nav.js"></script>
+<script type="module">
+import { logEvent, ensureSessionStart } from './js/logger.js';
+const PAGE = 1;
+ensureSessionStart();
+const _pageStart = Date.now();
+
+// page_view
+logEvent('page_view', { page: PAGE, totalPages: 10 });
+
+// time_on_page
+window.addEventListener('beforeunload', () => {
+  logEvent('time_on_page', { page: PAGE, seconds: Math.round((Date.now() - _pageStart) / 1000) });
+});
+
+// widget_interaction — copy-paste widget
+document.getElementById('add-line-btn').addEventListener('click', () => {
+  logEvent('widget_interaction', { widget: 'copy_paste_add_line', page: PAGE });
+});
+document.getElementById('run-loop-btn').addEventListener('click', () => {
+  logEvent('widget_interaction', { widget: 'run_for_loop', page: PAGE });
+});
+</script>
 <script>
 (function() {
   // ── Without-a-loop panel ──

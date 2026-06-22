@@ -122,6 +122,30 @@ while count &gt; 0:
 <script src="js/syntax-highlight.js"></script>
 <script src="js/step-through.js"></script>
 <script src="js/nav.js"></script>
+<script type="module">
+import { logEvent, ensureSessionStart } from './js/logger.js';
+const PAGE = 3;
+ensureSessionStart();
+const _pageStart = Date.now();
+
+logEvent('page_view', { page: PAGE, totalPages: 10 });
+
+window.addEventListener('beforeunload', () => {
+  logEvent('time_on_page', { page: PAGE, seconds: Math.round((Date.now() - _pageStart) / 1000) });
+});
+
+// widget_interaction — wrap checkBug and testFix after they are defined
+const _origCheckBug = window.checkBug;
+window.checkBug = function(n, ans) {
+  logEvent('widget_interaction', { widget: 'infinite_loop_debugger', page: PAGE, action: 'predict', bug: n, answer: ans });
+  return _origCheckBug(n, ans);
+};
+const _origTestFix = window.testFix;
+window.testFix = function(n) {
+  logEvent('widget_interaction', { widget: 'infinite_loop_debugger', page: PAGE, action: 'test_fix', bug: n });
+  return _origTestFix(n);
+};
+</script>
 <script>
 (function() {
   // Highlight code blocks

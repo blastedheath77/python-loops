@@ -95,6 +95,37 @@ for num in numbers:
 <script src="js/syntax-highlight.js"></script>
 <script src="js/step-through.js"></script>
 <script src="js/nav.js"></script>
+<script type="module">
+import { logEvent, ensureSessionStart } from './js/logger.js';
+const PAGE = 7;
+ensureSessionStart();
+const _pageStart = Date.now();
+
+logEvent('page_view', { page: PAGE, totalPages: 10 });
+
+window.addEventListener('beforeunload', () => {
+  logEvent('time_on_page', { page: PAGE, seconds: Math.round((Date.now() - _pageStart) / 1000) });
+});
+
+// Multiple-choice quiz answers (delegated)
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.mc-btn');
+  if (btn) {
+    const choice = btn.textContent.trim().charAt(0); // 'A', 'B', 'C', 'D'
+    logEvent('widget_interaction', { widget: 'break_continue_quiz', page: PAGE, choice });
+  }
+});
+
+// Step-through buttons (delegated)
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  if (btn.closest('.step-through-container')) {
+    const label = btn.textContent.trim().replace(/\s+/g, '_').toLowerCase();
+    logEvent('widget_interaction', { widget: `step_through_${label}`, page: PAGE });
+  }
+});
+</script>
 <script>
 (function() {
   // Highlight static code blocks

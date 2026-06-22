@@ -88,6 +88,41 @@
 <script src="js/syntax-highlight.js"></script>
 <script src="js/robot-game.js"></script>
 <script src="js/nav.js"></script>
+<script type="module">
+import { logEvent, ensureSessionStart, getSessionStartMs } from './js/logger.js';
+const PAGE = 10;
+ensureSessionStart();
+const _pageStart = Date.now();
+
+logEvent('page_view', { page: PAGE, totalPages: 10 });
+
+// tool_complete — student reached the final page
+logEvent('tool_complete', {
+  totalTimeSeconds: Math.round((_pageStart - getSessionStartMs()) / 1000),
+});
+
+window.addEventListener('beforeunload', () => {
+  logEvent('time_on_page', { page: PAGE, seconds: Math.round((Date.now() - _pageStart) / 1000) });
+});
+
+// Patch selectLevel (defined in the inline script) to log level changes
+const _origSelectLevel = window.selectLevel;
+// Patch after inline script runs (it sets window.selectLevel synchronously,
+// but this module is deferred, so it's already set by the time we run)
+window.selectLevel = function(idx) {
+  logEvent('widget_interaction', { widget: 'robot_level_select', page: PAGE, level: idx + 1 });
+  return _origSelectLevel(idx);
+};
+
+// Run-program button (if present — robot-game.js renders it dynamically)
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  if (btn.id === 'run-btn' || btn.textContent.trim().startsWith('▶')) {
+    logEvent('widget_interaction', { widget: 'robot_run_program', page: PAGE });
+  }
+});
+</script>
 <script>
 (function() {
   const canvas   = document.getElementById('robot-canvas');

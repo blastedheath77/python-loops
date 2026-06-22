@@ -200,6 +200,28 @@
 <script src="js/syntax-highlight.js"></script>
 <script src="js/step-through.js"></script>
 <script src="js/nav.js"></script>
+<script type="module">
+import { logEvent, ensureSessionStart } from './js/logger.js';
+const PAGE = 2;
+ensureSessionStart();
+const _pageStart = Date.now();
+
+logEvent('page_view', { page: PAGE, totalPages: 10 });
+
+window.addEventListener('beforeunload', () => {
+  logEvent('time_on_page', { page: PAGE, seconds: Math.round((Date.now() - _pageStart) / 1000) });
+});
+
+// widget_interaction — step-through controls (delegated)
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  const container = btn.closest('.step-through-container');
+  if (!container) return;
+  const label = btn.textContent.trim().replace(/\s+/g, '_').toLowerCase();
+  logEvent('widget_interaction', { widget: `step_through_${label}`, page: PAGE });
+});
+</script>
 <script>
 (function() {
   var code = [

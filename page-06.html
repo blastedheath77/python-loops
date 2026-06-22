@@ -70,6 +70,32 @@
 <script src="js/step-through.js"></script>
 <script src="js/drag-drop.js"></script>
 <script src="js/nav.js"></script>
+<script type="module">
+import { logEvent, ensureSessionStart } from './js/logger.js';
+const PAGE = 6;
+ensureSessionStart();
+const _pageStart = Date.now();
+
+logEvent('page_view', { page: PAGE, totalPages: 10 });
+
+window.addEventListener('beforeunload', () => {
+  logEvent('time_on_page', { page: PAGE, seconds: Math.round((Date.now() - _pageStart) / 1000) });
+});
+
+document.getElementById('rerun-btn').addEventListener('click', () => {
+  logEvent('widget_interaction', { widget: 'list_loop_rerun', page: PAGE });
+});
+document.getElementById('reset-order-btn').addEventListener('click', () => {
+  logEvent('widget_interaction', { widget: 'list_loop_reset', page: PAGE });
+});
+
+// Drag events — delegated from the sortable list
+document.addEventListener('dragend', e => {
+  if (e.target.closest && e.target.closest('[id^="colour-card"], .draggable')) {
+    logEvent('widget_interaction', { widget: 'list_drag_reorder', page: PAGE });
+  }
+});
+</script>
 <script>
 (function() {
   // Highlight static code

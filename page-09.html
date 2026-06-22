@@ -129,6 +129,62 @@ print("Access granted!")</code></pre>
 <script src="js/syntax-highlight.js"></script>
 <script src="js/step-through.js"></script>
 <script src="js/nav.js"></script>
+<script type="module">
+import { logEvent, ensureSessionStart } from './js/logger.js';
+const PAGE = 9;
+ensureSessionStart();
+const _pageStart = Date.now();
+
+logEvent('page_view', { page: PAGE, totalPages: 10 });
+
+window.addEventListener('beforeunload', () => {
+  logEvent('time_on_page', { page: PAGE, seconds: Math.round((Date.now() - _pageStart) / 1000) });
+});
+
+// Tab switches
+['acc', 'srch', 'filt', 'val'].forEach(id => {
+  const btn = document.getElementById(`tab-${id}`);
+  if (btn) btn.addEventListener('click', () => {
+    logEvent('widget_interaction', { widget: 'pattern_tab', page: PAGE, tab: id });
+  });
+});
+
+// Accumulator rebuild
+document.getElementById('acc-rebuild').addEventListener('click', () => {
+  logEvent('widget_interaction', { widget: 'accumulator_rebuild', page: PAGE });
+});
+
+// Search rebuild
+document.getElementById('search-rebuild').addEventListener('click', () => {
+  logEvent('widget_interaction', { widget: 'search_rebuild', page: PAGE });
+});
+
+// Filter threshold slider (debounced)
+let _filtTimer;
+const filtSlider = document.getElementById('filt-threshold');
+if (filtSlider) {
+  filtSlider.addEventListener('input', () => {
+    clearTimeout(_filtTimer);
+    _filtTimer = setTimeout(() => {
+      logEvent('widget_interaction', { widget: 'filter_threshold', page: PAGE, value: filtSlider.value });
+    }, 600);
+  });
+}
+
+// Password validation terminal
+document.getElementById('pw-submit').addEventListener('click', () => {
+  logEvent('widget_interaction', { widget: 'password_submit', page: PAGE });
+});
+
+// Step-through buttons (delegated)
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (btn && btn.closest('.step-through-container')) {
+    const label = btn.textContent.trim().replace(/\s+/g, '_').toLowerCase();
+    logEvent('widget_interaction', { widget: `step_through_${label}`, page: PAGE });
+  }
+});
+</script>
 <script>
 (function() {
   // Highlight val code
